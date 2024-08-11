@@ -39,7 +39,7 @@ func find_traversable():
 			var y = int(elem[1])
 			if Board.is_dark(elem) and not visited[x][y]:
 				visited[x][y] = true
-				if Board.is_empty(elem):
+				if Board.is_empty(elem) or Board.is_enemy_king(Item_Color[0], elem):
 					traversable.append(elem)
 					square_queue.append([elem, square[1]])
 				elif Board.is_ally(Item_Color[0], elem):
@@ -68,7 +68,7 @@ func find_attackable():
 				visited[x][y] = true
 				if Board.is_dark(elem):
 					square_queue.append([elem, square[1]])
-				if Board.is_enemy(Item_Color[0], elem):
+				if Board.is_enemy(Item_Color[0], elem) and not Board.is_enemy_king(Item_Color[0], elem):
 					attackable.append(elem)
 
 func move(dest: String):

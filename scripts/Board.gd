@@ -156,3 +156,6 @@ func clear_square(piece: Pawn):
 	set_square(pos, ".")
 	get_node(pos).remove_child(piece)
 	piece.queue_free()
+	
+static func is_enemy_king(color: String, pos: String) -> bool:
+	return is_enemy(color, pos) and get_square(pos)[1] == 'K'
