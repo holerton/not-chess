@@ -48,6 +48,7 @@ func _on_chessboard_existing_piece_selected(piece):
 		move_army.emit(chosen_piece)
 
 func _on_chessboard_piece_moved():
+	$LeftRect/PieceSpawner.disable_selection_button()
 	var accessible = len(active_chessboard_squares)
 	clear_selection()
 	attacked_chessboard_squares = chosen_piece.find_attackable()
