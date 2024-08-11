@@ -1,0 +1,85 @@
+[gd_scene load_steps=4 format=3 uid="uid://bvqt2ht3hl1vk"]
+
+[ext_resource type="Script" path="res://scripts/Game.gd" id="1_7n50s"]
+[ext_resource type="Script" path="res://scripts/Board.gd" id="1_k8s6e"]
+[ext_resource type="Script" path="res://scripts/PiecesSpawner.gd" id="2_lars6"]
+
+[node name="GUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7n50s")
+
+[node name="ChessboardRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.313726, 0.588235, 0.239216, 1)
+
+[node name="Chessboard" type="FlowContainer" parent="ChessboardRect"]
+custom_minimum_size = Vector2(400, 400)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 200.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+script = ExtResource("1_k8s6e")
+
+[node name="LeftRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(380, 500)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -380.0
+offset_top = -250.0
+offset_bottom = 250.0
+grow_horizontal = 0
+grow_vertical = 2
+color = Color(0.443137, 0.756863, 0.407843, 1)
+
+[node name="PieceSpawner" type="FlowContainer" parent="LeftRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -50.0
+offset_right = 150.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
+script = ExtResource("2_lars6")
+
+[node name="AcceptDialog" type="AcceptDialog" parent="."]
+title = "Game Over"
+initial_position = 2
+
+[connection signal="move_army" from="." to="." method="_on_move_army"]
+[connection signal="start_turn" from="." to="." method="_on_start_turn"]
+[connection signal="start_turn" from="." to="LeftRect/PieceSpawner" method="_on_gui_start_turn"]
+[connection signal="existing_piece_selected" from="ChessboardRect/Chessboard" to="." method="_on_chessboard_existing_piece_selected"]
+[connection signal="piece_added" from="ChessboardRect/Chessboard" to="." method="_on_chessboard_piece_added"]
+[connection signal="piece_attacked" from="ChessboardRect/Chessboard" to="." method="_on_chessboard_piece_attacked"]
+[connection signal="piece_moved" from="ChessboardRect/Chessboard" to="." method="_on_chessboard_piece_moved"]
+[connection signal="final_selection" from="LeftRect/PieceSpawner" to="." method="_on_piece_spawner_final_selection"]
+[connection signal="final_selection" from="LeftRect/PieceSpawner" to="LeftRect/PieceSpawner" method="_on_final_selection"]
