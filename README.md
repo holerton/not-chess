@@ -11,7 +11,9 @@ There are two modes: *classic* (original game, you are able to play it with your
 
 The setting is a standard 8x8 chessboard with initial position like this: 
 
-![Initial position](https://raw.githubusercontent.com/holerton/not-chess/readme/board_initial.bmp)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/holerton/not-chess/readme/board_initial.bmp" />
+</p>
 
 There are two Kings, being referenced as "capitals", and a capital of each player is main goal for another. 
 Two types of figures you can place to the board:
