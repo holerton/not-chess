@@ -83,6 +83,9 @@ func get_army():
 func _ready():
 	pass # Replace with function body.
 
+func has_army():
+	return len(army) > 0
+
 func is_alive():
 	return king != null
 

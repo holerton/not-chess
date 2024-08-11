@@ -16,25 +16,27 @@ func _ready():
 			if square.is_active:
 				var new_piece = square.get_child(1).duplicate()
 				new_piece.piece_name = square.get_child(1).piece_name
-				button.disabled = true
 				final_selection.emit(new_piece)
 				)
 	button = Button.new()
+	button.text = "Move Army"
 	button.pressed.connect(self._button_pressed)
+	button.disabled = true
 	add_child(button)
 	
 	end_turn_button = Button.new()
 	end_turn_button.text = "End Turn"
 	end_turn_button.pressed.connect(get_node('../..')._on_end_turn)
+	end_turn_button.disabled = true
 	add_child(end_turn_button)
 
 	cancel_selection_button = Button.new()
 	cancel_selection_button.pressed.connect(get_node('../..').cancel_selection)
 	cancel_selection_button.set_text("Cancel Selection")
+	cancel_selection_button.disabled = true
 	add_child(cancel_selection_button)
 	
 func _button_pressed():
-	button.disabled = true
 	final_selection.emit(null)
 
 func basic_setup():
@@ -60,21 +62,20 @@ func flip_squares(pieces, piece_color):
 func _process(delta):
 	pass
 
-func _on_gui_start_turn():
-	button.text = "Move Army"
-	button.disabled = false
-	end_turn_button.disabled = true
-	disable_selection_button()
-
-
-func _on_final_selection(piece):
-	end_turn_button.disabled = false
-	
 func enable_selection_button():
 	cancel_selection_button.disabled = false
 
 func disable_selection_button():
 	cancel_selection_button.disabled = true
-	
+
+func enable_end_button():
+	end_turn_button.disabled = false
+
 func disable_end_button():
 	end_turn_button.disabled = true
+
+func disable_move_button():
+	button.disabled = true
+	
+func enable_move_button():
+	button.disabled = false
