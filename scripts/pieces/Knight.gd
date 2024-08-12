@@ -1,12 +1,14 @@
-@tool
-extends Pawn
+extends BasePiece
 class_name Knight
+## Class for a Knight. Extends BasePiece
 
-func _ready():
-	range = 1
-	speed = 2
-	damage = 1
-	self.texture = load("res://images/WKnight.svg") if Item_Color == "white" else load("res://images/BKnight.svg")
-
-func _process(_delta):
-	pass
+## Creates a new Knight. Accepts three parameters: color, coords and position. 
+## Those parameters are used in parents's constructor.
+## Also sets it's range, speed, damage and textures.
+func _init(color: String, coords: String, position: Vector2):
+	self.range = 1
+	self.speed = 2
+	self.damage = 1
+	self.textures = [load("res://images/WKnight.svg") if color == "white"
+	else load("res://images/BKnight.svg")]
+	super(color, coords, position, "Night")
