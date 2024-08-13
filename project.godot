@@ -11,14 +11,13 @@ config_version=5
 [application]
 
 config/name="Not-Chess"
-run/main_scene="res://scenes/gui.tscn"
+run/main_scene="res://scenes/start_menu.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
-[display]
+[autoload]
 
-window/size/viewport_width=880
-window/size/viewport_height=500
+Global="*res://scripts/global.gd"
 
 [input]
 
