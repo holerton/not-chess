@@ -10,6 +10,7 @@ var on_click: Callable = func():
 	square_clicked.emit(self)
 
 var state: int = 0
+var colors: Array = []
 
 ## Constructor, takes three arguments: dark, size, name.
 ## dark defines whether the square is bright or dark;
@@ -23,7 +24,6 @@ func _init(dark: bool, size: Vector2, name: String, signal_reciever: Callable):
 		self.colors = [Color.ALICE_BLUE, Color.BLUE, Color.PALE_VIOLET_RED]
 
 	square_clicked.connect(signal_reciever)
-	self.container_name = get_parent().name 
 	self.set_custom_minimum_size(size)
 	self.name = name
 	var panel = Panel.new()
@@ -37,6 +37,9 @@ func is_empty() -> bool:
 
 func set_action(action: Callable) -> void:
 	on_click = action
+
+func get_container_name() -> String:
+	return get_parent().name
 
 func flip_activity() -> void:
 	state = Global.ACTIVE if state == Global.PASSIVE else Global.PASSIVE

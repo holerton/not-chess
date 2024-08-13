@@ -3,8 +3,7 @@ extends PieceContainer
 ## Class that stores the BasePieces used for cloning.
 ## Extends PieceContainer
 
-## Signal used when the user selects the BasePiece to clone
-signal final_selection(piece: BasePiece)
+signal move_army(piece: BasePiece)
 
 ## Button by pressing which the user indicates that he does not want to clone any BasePiece
 var move_army_button: Button
@@ -25,7 +24,9 @@ func _ready():
 	
 	## Calling parent's _ready() method
 	super()
-
+	
+	move_army.connect(get_node("../..").final_selection)
+	
 	## Setting up the move_army_button
 	move_army_button = Button.new()
 	move_army_button.text = "Move Army"
@@ -55,7 +56,7 @@ func _ready():
 
 ## Emits final_selection signal with null which means that no piece will be cloned
 func _move_army_button_pressed():
-	final_selection.emit(null)
+	move_army.emit(null)
 
 ## Creates all of the pieces in the PieceSpawner
 func basic_setup():
