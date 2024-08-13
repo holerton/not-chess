@@ -1,54 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bvqt2ht3hl1vk"]
+[gd_scene load_steps=2 format=3 uid="uid://bvqt2ht3hl1vk"]
 
 [ext_resource type="Script" path="res://scripts/game modes/ClassicMode.gd" id="1_f3ot0"]
-[ext_resource type="Script" path="res://scripts/containers/Board.gd" id="2_ipesq"]
-[ext_resource type="Script" path="res://scripts/containers/PiecesSpawner.gd" id="3_c70tb"]
 
 [node name="ClassicMode" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_f3ot0")
-
-[node name="ChessboardRect" type="ColorRect" parent="."]
-layout_mode = 0
-color = Color(0.313726, 0.588235, 0.239216, 1)
-
-[node name="Chessboard" type="FlowContainer" parent="ChessboardRect"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/h_separation = 0
-theme_override_constants/v_separation = 0
-script = ExtResource("2_ipesq")
-
-[node name="LeftRect" type="ColorRect" parent="."]
-layout_mode = 0
-color = Color(0.443137, 0.756863, 0.407843, 1)
-
-[node name="PieceSpawner" type="FlowContainer" parent="LeftRect"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/h_separation = 0
-theme_override_constants/v_separation = 0
-script = ExtResource("3_c70tb")
-
-[node name="AcceptDialog" type="AcceptDialog" parent="."]
-title = "Game Over"
-initial_position = 2
-
-[connection signal="empty_square_selected" from="ChessboardRect/Chessboard" to="." method="_on_chessboard_empty_square_selected"]
-[connection signal="existing_piece_selected" from="ChessboardRect/Chessboard" to="." method="_on_chessboard_existing_piece_selected"]
-[connection signal="piece_attacked" from="ChessboardRect/Chessboard" to="." method="_on_chessboard_piece_attacked"]
-[connection signal="final_selection" from="LeftRect/PieceSpawner" to="." method="_on_piece_spawner_final_selection"]
-[connection signal="final_selection" from="LeftRect/PieceSpawner" to="LeftRect/PieceSpawner" method="_on_final_selection"]
