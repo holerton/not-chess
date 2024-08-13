@@ -1,13 +1,13 @@
 [gd_scene load_steps=4 format=3 uid="uid://bvqt2ht3hl1vk"]
 
-[ext_resource type="Script" path="res://scripts/Game.gd" id="1_7n50s"]
-[ext_resource type="Script" path="res://scripts/containers/Board.gd" id="1_k8s6e"]
-[ext_resource type="Script" path="res://scripts/containers/PiecesSpawner.gd" id="2_lars6"]
+[ext_resource type="Script" path="res://scripts/game modes/ClassicMode.gd" id="1_f3ot0"]
+[ext_resource type="Script" path="res://scripts/containers/Board.gd" id="2_ipesq"]
+[ext_resource type="Script" path="res://scripts/containers/PiecesSpawner.gd" id="3_c70tb"]
 
-[node name="GUI" type="Control"]
+[node name="ClassicMode" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-script = ExtResource("1_7n50s")
+script = ExtResource("1_f3ot0")
 
 [node name="ChessboardRect" type="ColorRect" parent="."]
 layout_mode = 0
@@ -24,7 +24,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
-script = ExtResource("1_k8s6e")
+script = ExtResource("2_ipesq")
 
 [node name="LeftRect" type="ColorRect" parent="."]
 layout_mode = 0
@@ -41,7 +41,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
-script = ExtResource("2_lars6")
+script = ExtResource("3_c70tb")
 
 [node name="AcceptDialog" type="AcceptDialog" parent="."]
 title = "Game Over"
