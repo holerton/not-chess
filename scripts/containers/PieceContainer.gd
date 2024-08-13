@@ -20,6 +20,9 @@ func _ready() -> void:
 	
 	if board_width < 0 or board_height < 0:
 		return
+		
+	add_theme_constant_override("h_separation", 0)
+	add_theme_constant_override("v_separation", 0)
 	
 	set_custom_minimum_size(Vector2(board_width * square_x_size, board_height * square_y_size))
 	
@@ -31,6 +34,7 @@ func _ready() -> void:
 			var dark = is_dark.call(i, j)
 			var size = Vector2(square_x_size, square_y_size)
 			var name = int_to_coords([j + 1, i + 1])
+			var reciever = get_node("../..")._on_square_clicked
 			var new_square = Square.new(dark, size, name)
 			add_child(new_square)
 

@@ -25,17 +25,6 @@ func _ready():
 	
 	## Calling parent's _ready() method
 	super()
-	
-	## Setting the action of the Squares
-	var squares = get_children()
-	for square in squares:
-		square.set_action(func(): 
-			## if Square is active, clones the selected piece 
-			## and emits final_selection to notify the main script
-			if square.is_active:
-				var new_piece = square.get_piece().clone()
-				final_selection.emit(new_piece)
-				)
 
 	## Setting up the move_army_button
 	move_army_button = Button.new()
