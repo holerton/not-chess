@@ -119,3 +119,12 @@ func has_army():
 ## Returns true if king is not null, false otherwise
 func is_alive():
 	return king != null
+	
+func has_piece(piece: BasePiece):
+	if piece == king:
+		return true
+	if piece in peasants:
+		return true
+	if piece in army:
+		return true
+	return false
