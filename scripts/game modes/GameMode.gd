@@ -1,5 +1,5 @@
 extends Control
-## Main script.
+class_name GameMode
 
 ## Stores the current piece which comes from cloning or moving 
 var current_piece: BasePiece = null
@@ -73,7 +73,7 @@ func start_turn():
 		$LeftRect/PieceSpawner.flip_active_squares(pieces, players[0].color)
 	else:
 		$LeftRect/PieceSpawner.disable_move_army_button()
-		var message = "The winner is white" if players[0].is_alive() else "The winner is black"
+		var message = "The winner is " + players[0].color
 		$AcceptDialog.dialog_text = message
 		$AcceptDialog.show()
 
