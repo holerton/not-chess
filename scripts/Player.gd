@@ -33,48 +33,22 @@ func _init(color: String):
 func get_accessible(dark: bool):
 	if is_alive():
 		var accessible = []
-		var x = int(king.coords[0])
-		var y = int(king.coords[1])
 		
-		## Setting up visited and square_queue Arrays
+		## Setting up square_queue, which contains all pawns and a king
 		var square_queue = [king.coords]
-		
-		var visited = []
-		for i in 10:
-			visited.append([])
-			for j in 10:
-				visited[i].append(false)
-		visited[x][y] = true
-		
 		for peasant in peasants:
-			x = int(peasant.coords[0])
-			y = int(peasant.coords[1])
-			
-			## Queue saves last visited square
-			square_queue.append(peasant.coords) 
-			visited[x][y] = true
-		
-		## When all of the Pawns and King are visited, returns result
+			square_queue.append(peasant.coords)
+		## When all of the Pawns and King are explored, returns accessible
 		while not square_queue.is_empty():
 			var square = square_queue.pop_front()
-			var neighbors = Board.get_neighbors(square)
-			for elem in neighbors: ## Checking neighbors
-				x = int(elem[0])
-				y = int(elem[1])
-				
-				## Accessible square must be not visited and empty
-				if not visited[x][y] and Board.is_empty(elem):
-					visited[x][y] = true
-					
-					## If the color fits, adds square to the resulting Array
-					if is_dark(elem) == dark:
-						accessible.append(elem)
+			var neighbors = Board.get_neighbors(square, 1)
+			for neighbor in neighbors:
+				## Accessible square must be the searched color and empty
+				if Board.is_dark(neighbor) == dark and Board.is_empty(neighbor):
+					## If the square is not added yet, add
+					if neighbor not in accessible:
+						accessible.append(neighbor)
 		return accessible
-
-## Returns true if the given coordinates correspond to a dark square.
-## Otherwise false.
-func is_dark(pos: String) -> bool:
-	return (int(pos[0]) + int(pos[1])) % 2
 
 ## Adds an instance of BasePiece to the Player
 func spawn_piece(piece: BasePiece):
