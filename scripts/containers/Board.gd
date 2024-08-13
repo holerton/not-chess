@@ -31,24 +31,7 @@ func _ready():
 	
 	## Calling parent's _ready() method
 	super()
-	
-	## Setting the action of the Squares
-	var squares = get_children()
-	for square in squares:
-		square.set_action(func():
-			
-			## If the square is active AND empty, emits empty_square_selected
-			## If the square is active AND not empty, emits existing_piece_selected  
-			if square.is_active:
-				var piece = square.get_piece()
-				if piece == null:
-					empty_square_selected.emit(square.name)
-				else:
-					existing_piece_selected.emit(piece)
-			# If the square is attacked, emits piece_attacked
-			elif square.is_attacked:
-				piece_attacked.emit(square.get_child(1))
-				)
+
 
 ## Resizes and clears chessboard_map
 func clear_chessboard_map():
