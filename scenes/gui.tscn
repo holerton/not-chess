@@ -6,32 +6,20 @@
 
 [node name="GUI" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
 script = ExtResource("1_7n50s")
 
 [node name="ChessboardRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(500, 500)
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
 color = Color(0.313726, 0.588235, 0.239216, 1)
 
 [node name="Chessboard" type="FlowContainer" parent="ChessboardRect"]
-custom_minimum_size = Vector2(400, 400)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -200.0
-offset_right = 200.0
-offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/h_separation = 0
@@ -39,18 +27,7 @@ theme_override_constants/v_separation = 0
 script = ExtResource("1_k8s6e")
 
 [node name="LeftRect" type="ColorRect" parent="."]
-custom_minimum_size = Vector2(380, 500)
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -380.0
-offset_top = -250.0
-offset_bottom = 250.0
-grow_horizontal = 0
-grow_vertical = 2
+layout_mode = 0
 color = Color(0.443137, 0.756863, 0.407843, 1)
 
 [node name="PieceSpawner" type="FlowContainer" parent="LeftRect"]

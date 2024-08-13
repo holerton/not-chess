@@ -19,11 +19,24 @@ var attacked_chessboard_squares = []
 ## Prepares the game: creates two players and sets up Board and PieceSpawner
 ## After that calls method start_turn to begin the game
 func _ready():
+
+	var total_size = Vector2(Global.board_width * Global.tile_size * 1.5,
+	Global.board_height * Global.tile_size)
+	get_window().size = total_size
+	
+	$ChessboardRect.size = Vector2(Global.board_width * Global.tile_size,
+	Global.board_height * Global.tile_size)
+	
+	$LeftRect.size = Vector2(Global.board_width * Global.tile_size * 0.5,
+	Global.board_height * Global.tile_size)
+	$LeftRect.position = Vector2(total_size[0] / 1.5, 0)
+	
 	players = [Player.new("black"), Player.new("white")]
 	var kings = $ChessboardRect/Chessboard.basic_setup()
 	$LeftRect/PieceSpawner.basic_setup()
 	players[0].spawn_piece(kings[1])
 	players[1].spawn_piece(kings[0])
+	
 	start_turn()
 
 ## Sets the value of current_piece to piece
