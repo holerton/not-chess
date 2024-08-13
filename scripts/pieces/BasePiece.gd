@@ -31,17 +31,17 @@ var special_action: bool = false
 var textures: Array = [null]
 
 ## Creates new piece given its color, coordinates in the container, position in the Square and name
-func _init(color: String, coords: String, position: Vector2, name: String = "#"):
+func _init(color: String, coords: String, name: String = "#"):
 	self.color = color
 	self.coords = coords
-	self.position = position
+	self.position = Vector2(Global.tile_size / 2, Global.tile_size / 2)
 	self.name = name
 	self.shortname = color[0] + str(name)[0]
 	self.texture = self.textures[self.health - 1]
 
 ## Returns BasePiece with the same properties as the self except for coordinates, which are empty
 func clone() -> BasePiece:
-	var other = new(color, "", position)
+	var other = new(color, "")
 	return other
 
 ## Uses DFS to fill and return the Array with coordinates of all of the reachable squares. 

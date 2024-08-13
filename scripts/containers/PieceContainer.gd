@@ -45,19 +45,18 @@ static func int_to_coords(coords: Array):
 ## Creates a piece, sets it on the chosen square and returs it
 func add_piece(piece: String, color: String, pos: String) -> BasePiece:
 	var new_piece: BasePiece
-	var center = Vector2(square_x_size / 2, square_y_size / 2)
 	match piece:
 		"Pawn":
-			new_piece = Pawn.new(color, pos, center)
+			new_piece = Pawn.new(color, pos)
 		"King":
-			new_piece = King.new(color, pos, center)
+			new_piece = King.new(color, pos)
 		"Queen":
-			new_piece = Queen.new(color, pos, center)
+			new_piece = Queen.new(color, pos)
 		"Night":
-			new_piece = Knight.new(color, pos, center)
+			new_piece = Knight.new(color, pos)
 		"Rook":
-			new_piece = Rook.new(color, pos, center)
+			new_piece = Rook.new(color, pos)
 		"Bishop":
-			new_piece = Bishop.new(color, pos, center)
+			new_piece = Bishop.new(color, pos)
 	get_node(pos).add_child(new_piece)
 	return new_piece
