@@ -3,15 +3,6 @@ class_name Board
 ## Class that represents a chessboard. Contains instances of Square 
 ## and a chessboard_map to easily find necessary information.
 
-## Emitted when user selects a piece on a chessboard
-signal existing_piece_selected(piece)
-
-## Emitted when user attacks a piece on a chessboard
-signal piece_attacked(other: BasePiece)
-
-## Emitted when user selects an empty square
-signal empty_square_selected(pos: String)
-
 ## Represents all the pieces on their respective places
 static var chessboard_map = []
 
