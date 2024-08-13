@@ -76,7 +76,7 @@ func basic_setup():
 	for color in colors:
 		var j = 1
 		for piece in pieces:
-			add_piece(piece, color, str(i) + str(j))
+			add_piece(piece, color, int_to_coords([j, i]))
 			j += 1
 		i += 1
 
@@ -85,11 +85,11 @@ func basic_setup():
 ## color - String with color of the said pieces
 ## Selects necessary squares and changes their activity: from true to false and vice versa.
 func flip_active_squares(pieces: Array, piece_color: String):
-	var i = "1" if piece_color == "white" else "2"
+	var i = 1 if piece_color == "white" else 2
 	var all_pieces = ["Rook", "Bishop", "Night", "Pawn"]
 	for j in len(all_pieces):
 		if all_pieces[j] in pieces:
-			get_node(i + str(j + 1)).flip_activity()
+			get_node(int_to_coords([j + 1, i])).flip_activity()
 
 ## Enables cancel_selection_button
 func enable_cancel_selection_button():

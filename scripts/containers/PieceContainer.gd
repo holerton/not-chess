@@ -20,16 +20,23 @@ func _ready() -> void:
 	
 	if board_width < 0 or board_height < 0:
 		return
-
+	
 	set_custom_minimum_size(Vector2(board_width * square_x_size, board_height * square_y_size))
 	
+	var is_dark = func(x, y):
+		return board_width % 2 != (x + y) % 2
+
 	for i in range(board_height):
 		for j in range(board_width):
-			var dark = (i + j) % 2
+			var dark = is_dark.call(i, j)
 			var size = Vector2(square_x_size, square_y_size)
-			var name = str(i + 1) + str(j + 1)
+			var name = int_to_coords([j + 1, i + 1])
 			var new_square = Square.new(dark, size, name)
 			add_child(new_square)
+
+## Returns coordinate string from two integers
+static func int_to_coords(coords: Array):
+	return str(coords[0]) + "-" + str(coords[1])
 
 ## Creates a piece, sets it on the chosen square and returs it
 func add_piece(piece: String, color: String, pos: String) -> BasePiece:
