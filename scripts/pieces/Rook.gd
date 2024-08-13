@@ -2,10 +2,10 @@ extends BasePiece
 class_name Rook
 ## Class for a Rook. Extends BasePiece
 
-## Creates a new Rook. Accepts three parameters: color, coords and position. 
+## Creates a new Rook. Accepts three parameters: color, coords. 
 ## Those parameters are used in parent's constructor.
 ## Also sets its range, speed, damage, health, special_action and textures.
-func _init(color: String, coords: String, position: Vector2):
+func _init(color: String, coords: String):
 	self.range = 1
 	self.speed = 1
 	self.damage = 1
@@ -13,7 +13,7 @@ func _init(color: String, coords: String, position: Vector2):
 	self.special_action = true
 	self.textures = [load("res://images/WRookU.svg") if color == "white" else load("res://images/BRookU.svg"),
 	load("res://images/WRook.svg") if color == "white" else load("res://images/BRook.svg")]
-	super(color, coords, position, "Rook")
+	super(color, coords, "Rook")
 	
 
 ## Returns an Array with two Arrays. 
