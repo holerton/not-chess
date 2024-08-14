@@ -124,23 +124,42 @@ static func is_in_bounds(pos: String):
 static func is_empty(pos: String):
 	return get_square(pos) == '.'
 
+## Returns 1, if colors are from the same team, 0 if neutral, -1 if enemies
+static func get_status(col1: String, col2: String):
+	return Global.teams.find_key(col1) * Global.teams.find_key(col2)
+
 ## Accepts two parameters:
 ## color - white or black
 ## pos - coordinates of the square that needs to be checked
 ## Returns true if checked square contains the piece of opposing color.
 ## False otherwise
-static func is_enemy(color: String, pos: String):
+static func is_enemy(color: String, pos: String) -> bool:
 	var square = get_square(pos)
-	return len(square) == 2 and square[0] != color
+	if len(square) == 2:
+		return get_status(square[0], color) == -1
+	return false
 
 ## Accepts two parameters:
 ## color - white or black
 ## pos - coordinates of the square that needs to be checked
 ## Returns true if checked square contains the piece of the same color.
 ## False otherwise
-static func is_ally(color: String, pos: String):
+static func is_ally(color: String, pos: String) -> bool:
 	var square = get_square(pos)
-	return len(square) == 2 and square[0] == color
+	if len(square) == 2:
+		return get_status(square[0], color) == 1
+	return false
+
+## Accepts two parameters:
+## color - white or black
+## pos - coordinates of the square that needs to be checked
+## Returns true if checked square contains the piece of neutral color.
+## False otherwise
+static func is_neutral(color: String, pos: String) -> bool:
+	var square = get_square(pos)
+	if len(square) == 2:
+		return get_status(square[0], color) == 0
+	return false
 
 ## Accepts two parameters:
 ## color - white or black
