@@ -4,9 +4,9 @@ var auto_pieces = []
 
 func _ready():
 	super()
-	var positions = ["1-2", "2-1", 
-	str(Global.board_width) + "-" + str(Global.board_height - 1),
-	str(Global.board_width - 1) + "-"  + str(Global.board_height)
+	var positions = [Board.int_to_coords([1, 2]), Board.int_to_coords([2, 1]), 
+	Board.int_to_coords([Global.board_width, Global.board_height - 1]),
+	Board.int_to_coords([Global.board_width - 1, Global.board_height])
 	]
 	for pos in positions:
 		auto_pieces.append(Zebra.new("neutral", pos))
