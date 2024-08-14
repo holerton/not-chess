@@ -12,7 +12,7 @@ There are two modes: *classic* (original game, you are able to play it with your
 The setting is a standard 8x8 chessboard with initial position like this: 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/holerton/not-chess/master/board_initial.bmp" />
+  <img src="https://raw.githubusercontent.com/holerton/not-chess/master/readme_images/board_initial.bmp" />
 </p>
 
 There are two Kings, being referenced as "capitals", and a capital of each player is main goal for another. 
@@ -58,7 +58,7 @@ Terrain and weather both influence figures' movement, but terrain is static and 
  8. Rain: archers have 0.3 chance to miss;
  9. Wind: riders have +1 movement if they ride all way straight with the direction of the wind; archers have 0.1 chance to miss independently of wind direction;
   <p align="center">
-  <img src="https://raw.githubusercontent.com/holerton/not-chess/master/board.bmp" />
+  <img src="https://raw.githubusercontent.com/holerton/not-chess/master/readme_images/board_horse_mov.bmp" />
 </p>
 
 > магчыма гэта ня ўсё, напрыклад буры на моры якiя ламаюць бедных караблiкаў
