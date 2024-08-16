@@ -8,5 +8,4 @@ class_name Zebra
 func _init(color: String, coords: String):
 	self.textures = [load("res://images/Zebra.svg")]
 	super(color, coords, "Zebra")
-	# self.shortname = "Z"
 	self.speed = 1
