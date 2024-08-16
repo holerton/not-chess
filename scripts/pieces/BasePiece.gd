@@ -53,7 +53,7 @@ func find_reachable() -> Array:
 		visited.append([])
 		for j in Global.board_width + 2:
 			visited[i].append(false)
-	visited[xy[0]][xy[1]] = true
+	visited[xy[1]][xy[0]] = true
 	
 	var square_queue = [[coords, 0]] ## Queue saves last visited square and distance to it
 	var reachable = [coords]
@@ -72,8 +72,8 @@ func find_reachable() -> Array:
 			xy = Board.coords_to_int(elem)
 			
 			## Marking all of the visited squares (piece travels through black squares)
-			if Board.is_dark(elem) and not visited[xy[0]][xy[1]]:
-				visited[xy[0]][xy[1]] = true
+			if Board.is_dark(elem) and not visited[xy[1]][xy[0]]:
+				visited[xy[1]][xy[0]] = true
 				
 				## If square is empty OR an enemy king, its reachable
 				if Board.is_empty(elem) or Board.is_enemy_king(color[0], elem):
@@ -93,7 +93,7 @@ func find_attackable():
 		visited.append([])
 		for j in Global.board_width + 2:
 			visited[i].append(false)
-	visited[xy[0]][xy[1]] = true
+	visited[xy[1]][xy[0]] = true
 	
 	var square_queue = [[coords, 0]] ## Queue saves last visited square and distance to it
 	var attackable = []
@@ -112,8 +112,8 @@ func find_attackable():
 			xy = Board.coords_to_int(elem)
 			
 			## Marking all of the visited squares (piece travels through black squares)
-			if not visited[xy[0]][xy[1]]:
-				visited[xy[0]][xy[1]] = true
+			if not visited[xy[1]][xy[0]]:
+				visited[xy[1]][xy[0]] = true
 				
 				## If square is an enemy AND not an enemy king, its attackable
 				if Board.is_enemy(color[0], elem) and not Board.is_enemy_king(color[0], elem):
