@@ -23,7 +23,7 @@ offset_top = -96.0
 offset_right = 136.0
 offset_bottom = -65.0
 text = "8"
-placeholder_text = "8"
+placeholder_text = "5-30"
 script = ExtResource("1_t72cm")
 
 [node name="Height" type="LineEdit" parent="."]
@@ -33,7 +33,7 @@ offset_top = -25.0
 offset_right = 134.0
 offset_bottom = 6.0
 text = "8"
-placeholder_text = "8"
+placeholder_text = "5-18"
 script = ExtResource("2_l0tx8")
 
 [node name="Submit" type="Button" parent="."]
