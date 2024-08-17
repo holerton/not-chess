@@ -4,6 +4,7 @@ var auto_pieces = []
 
 func _ready():
 	super()
+	$ChessboardRect/Chessboard.randomize_terrain()
 	var size = Global.board_height * Global.board_width 
 	var num_of_zebras = min(size / 25, 16) # 64 / 25 = 2
 	
