@@ -26,12 +26,12 @@ func _ready() -> void:
 	
 	set_custom_minimum_size(Vector2(board_width * square_x_size, board_height * square_y_size))
 	
-	var is_dark = func(x, y):
-		return board_width % 2 != (x + y) % 2
+	var is_black = func(x, y):
+		return "Black" if board_width % 2 != (x + y) % 2 else "White"
 
 	for i in range(board_height):
 		for j in range(board_width):
-			var type = randi() % 6 # is_dark.call(i,j) 
+			var type = is_black.call(i, j) 
 			var size = Vector2(square_x_size, square_y_size)
 			var name = int_to_coords([j + 1, i + 1])
 			var reciever = get_node("../..")._on_square_clicked
