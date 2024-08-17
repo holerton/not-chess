@@ -11,17 +11,26 @@ var on_click: Callable = func():
 
 var state: int = 0
 var colors: Array = []
+const TERRAIN_COLORS: Array = ["Plain", "Forest", "Water", "Desert", "Marsh", "Mountain"]
 
 ## Constructor, takes three arguments: dark, size, name.
 ## dark defines whether the square is bright or dark;
 ## size defines the size of the rectangle;
 ## name defines the name that is used by BasePiece.
 ## Also creates an invisible Panel that reads clicks
-func _init(dark: bool, size: Vector2, name: String, signal_reciever: Callable):
-	if dark:
-		self.colors = [Color.DARK_SLATE_GRAY, Color.DARK_BLUE, Color.MEDIUM_VIOLET_RED]
-	else:
-		self.colors = [Color.ALICE_BLUE, Color.BLUE, Color.PALE_VIOLET_RED]
+func _init(type: int, size: Vector2, name: String, signal_reciever: Callable):
+	if TERRAIN_COLORS[type] == "Plain":
+		self.colors = [Color.LAWN_GREEN, Color.DARK_ORCHID, Color.CRIMSON ]
+	elif TERRAIN_COLORS[type] == "Forest":
+		self.colors = [Color.FOREST_GREEN, Color.DARK_ORCHID, Color.CRIMSON ]
+	elif TERRAIN_COLORS[type] == "Water":
+		self.colors = [Color.DODGER_BLUE, Color.DARK_ORCHID, Color.CRIMSON ]
+	elif TERRAIN_COLORS[type] == "Desert":
+		self.colors = [Color.CORNSILK, Color.DARK_ORCHID, Color.CRIMSON ]
+	elif TERRAIN_COLORS[type] == "Marsh":
+		self.colors = [Color.DARK_OLIVE_GREEN, Color.DARK_ORCHID, Color.CRIMSON ]
+	elif TERRAIN_COLORS[type] == "Mountain":
+		self.colors = [Color.DARK_GRAY, Color.DARK_ORCHID, Color.CRIMSON ]
 
 	square_clicked.connect(signal_reciever)
 	self.set_custom_minimum_size(size)

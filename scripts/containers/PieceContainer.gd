@@ -31,11 +31,11 @@ func _ready() -> void:
 
 	for i in range(board_height):
 		for j in range(board_width):
-			var dark = is_dark.call(i, j)
+			var type = randi() % 6 # is_dark.call(i,j) 
 			var size = Vector2(square_x_size, square_y_size)
 			var name = int_to_coords([j + 1, i + 1])
 			var reciever = get_node("../..")._on_square_clicked
-			var new_square = Square.new(dark, size, name, reciever)
+			var new_square = Square.new(type, size, name, reciever)
 			add_child(new_square)
 
 ## Returns coordinate string from two integers
