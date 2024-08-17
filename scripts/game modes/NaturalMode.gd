@@ -5,22 +5,20 @@ var auto_pieces = []
 func _ready():
 	super()
 	var size = Global.board_height * Global.board_width 
-	var num_of_zebras = size / 30 # 64 / 30 = 2
-	var positions = [Board.int_to_coords([1, 2]),
-	Board.int_to_coords([Global.board_width, Global.board_height - 1]), 
-	Board.int_to_coords([Global.board_width - 3, Global.board_height]) ,
-	Board.int_to_coords([4, 1]),
-	Board.int_to_coords([Global.board_width - 1, Global.board_height]),
-	Board.int_to_coords([2, 1]),
-	Board.int_to_coords([1, 4]),
-	Board.int_to_coords([Global.board_width, Global.board_height - 3]),
-	Board.int_to_coords([3, 2]),
-	Board.int_to_coords([Global.board_width - 2, Global.board_height - 1]),
-	Board.int_to_coords([Global.board_width - 1, Global.board_height - 2]),
-	Board.int_to_coords([2, 3]),
-	Board.int_to_coords([6, 1]),
-	Board.int_to_coords([Global.board_width - 5, Global.board_height])
-	]
+	var num_of_zebras = min(size / 25, 16) # 64 / 25 = 2
+	
+	# two 4x4 squares: first in top left corner and second in bottom right corner
+	var left_neighbors = Board.get_neighbors(Board.int_to_coords([0, 0]), 4)
+	var right_neighbors = Board.get_neighbors(
+	Board.int_to_coords([Global.board_width + 1, Global.board_height + 1]), 4)
+	
+	var positions = []
+	for i in range(len(left_neighbors)):
+		if Board.is_dark(left_neighbors[i]):
+			positions.append(left_neighbors[i])
+		if Board.is_dark(right_neighbors[i]):
+			positions.append(right_neighbors[i])
+	
 	for i in range(num_of_zebras) :
 		auto_pieces.append(Zebra.new("neutral", positions[i]))
 		$ChessboardRect/Chessboard.set_piece(auto_pieces[-1])
