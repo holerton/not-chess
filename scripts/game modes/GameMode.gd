@@ -31,14 +31,14 @@ func _ready():
 
 ## Adds children, sets every part of the gui in its place
 func construct_gui():
-	var window_size = Vector2(Global.board_width * Global.tile_size * 1.5,
-	Global.board_height * Global.tile_size)
+	var window_size = Vector2(Global.board_width * Global.tile_size + 
+	Global.tile_size * Global.piece_num, Global.board_height * Global.tile_size)
 	get_window().size = window_size
 	size = window_size
 	
 	var chessboard_rect = ColorRect.new()
 	chessboard_rect.name = "ChessboardRect"
-	chessboard_rect.size = Vector2(window_size[0] / 1.5, window_size[1])
+	chessboard_rect.size = Vector2(Global.board_width * Global.tile_size, window_size[1])
 	add_child(chessboard_rect)
 	
 	var chessboard = Board.new()
@@ -48,7 +48,7 @@ func construct_gui():
 	var right_rect = ColorRect.new()
 	right_rect.name = "RightRect"
 	right_rect.color = Color.SEA_GREEN
-	right_rect.size = Vector2(window_size[0] / 3, window_size[1])
+	right_rect.size = Vector2(Global.tile_size * Global.piece_num, window_size[1])
 	add_child(right_rect)
 	right_rect.layout_mode = 1
 	right_rect.anchors_preset = PRESET_TOP_RIGHT
