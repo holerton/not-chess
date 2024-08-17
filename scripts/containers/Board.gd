@@ -205,7 +205,16 @@ func flip_attacked_squares(pos_array: Array):
 
 func randomize_terrain():
 	var terrains = ["Plain", "Forest", "Water", "Desert", "Marsh", "Mountain"]
+	var weights = [10, 17, 22, 26, 28, 30]
 	var squares = get_children()
+	#var types = [0, 0, 0, 0, 0, 0]
 	for square in squares:
-		var new_terrain = terrains[gen.randi() % 6]
-		square.set_terrain(new_terrain)
+		var rand_num = gen.randi() % 30
+		
+		for i in range(6):
+			if rand_num < weights[i]:
+				square.set_terrain(terrains[i])
+				#types[i] += 1
+				break
+	#print(types)
+			
