@@ -49,6 +49,8 @@ Terrain and weather both influence figures' movement, but terrain is static and 
  4. Desert: rooks and archers skip turn after they step on this type of terrain (riders effectively change their horses to camels); CORNSILK
  5. Marshes: rider gets -1 movement of what he has when he enters one of this types of terrain; DARK_OLIVE_GREEN
  6. Mountain: any figure (including nomads) skips turn after it steps on this type of terrain. DARK_GRAY
+> колер выбару: DARK_ORCHID
+> колер атакi: CRIMSON
 
  - ### Weather types
  1. Flood: same as swamp;
