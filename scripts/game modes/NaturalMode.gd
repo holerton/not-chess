@@ -13,11 +13,12 @@ func _ready():
 	Board.int_to_coords([Global.board_width + 1, Global.board_height + 1]), 4)
 	
 	var positions = []
-	for i in range(len(left_neighbors)):
+	var len = len(left_neighbors)
+	for i in range(len):
 		if Board.is_dark(left_neighbors[i]):
 			positions.append(left_neighbors[i])
-		if Board.is_dark(right_neighbors[i]):
-			positions.append(right_neighbors[i])
+		if Board.is_dark(right_neighbors[len - i - 1]):
+			positions.append(right_neighbors[len - i - 1])
 	
 	for i in range(num_of_zebras) :
 		auto_pieces.append(Zebra.new("neutral", positions[i]))
