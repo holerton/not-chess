@@ -34,8 +34,6 @@ Nomads are peaceful people who travel through your battlefield. You can't attack
   <img src="https://upload.wikimedia.org/wikipedia/commons/e/ea/Mongol_Empire_map.gif" />
 </p>
 
-> Можна зрабiць нейкiя прыколы, напрыклад калi 5 разоў тыкнеш (выпадкова цi не) на качэўнiка, то яны ўключаць "Crazy Mode" i колькасьць павялiчыцца ў 5 разоў
-
 ### Seasons
 
 > Павiнны быць нейкiя поры года каб снег заўсёды не ляжаў, мабыць змена раз у 4 хады, каб яшчэ была такая логiка што качэўнiкi таксама неяк залежаць ад надвор'я
