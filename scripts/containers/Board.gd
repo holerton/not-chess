@@ -5,7 +5,7 @@ class_name Board
 
 ## Represents all the pieces on their respective places
 static var chessboard_map = []
-
+var gen = RandomNumberGenerator.new()
 ## Chessboard creation
 
 ## Sets up the Board.
@@ -202,3 +202,10 @@ func flip_active_squares(pos_array: Array):
 func flip_attacked_squares(pos_array: Array):
 	for pos in pos_array:
 		get_node(pos).flip_attacked()
+
+func randomize_terrain():
+	var terrains = ["Plain", "Forest", "Water", "Desert", "Marsh", "Mountain"]
+	var squares = get_children()
+	for square in squares:
+		var new_terrain = terrains[gen.randi() % 6]
+		square.set_terrain(new_terrain)
