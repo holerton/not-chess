@@ -73,7 +73,7 @@ Terrain and weather both influence figures' movement, but terrain is static and 
 >  
 >Вызначаем колькасьць блокаў кожнага тыпу (мноства квадрацікаў, звязаных па старане).
 >
->   Для кожнага тыпу * колькасьць блокаў $k_*$ вызначаецца ў межах $k_*^{min} - k_*^{max}$ у залежнасьці ад тыпу і size (усё float):
+>   Для кожнага тыпу * колькасьць блокаў $$ k_* $$ вызначаецца ў межах $$ k_*^{min} - k_*^{max} $$ у залежнасьці ад тыпу і size (усё float):
    $$ k_p^{min}=ln(size)-2 \quad \quad k_p^{max}=\frac {size} {16} $$
    $$k_f^{min}=ln(size)-3 \quad \quad k_f^{max}=\frac {size} {10}$$
    $$k_w^{min}=ln(size)-3 \quad \quad k_w^{max}=\frac {size} {10}$$
@@ -105,3 +105,6 @@ Terrain and weather both influence figures' movement, but terrain is static and 
  - **Rook**: *Warrior*, *Berserk*, *Fatman*
  - **Bishop**: *Archer*, *Cheater*
  - **Knight**: *Rider*,*Horseman*, or simply *Horse*
+
+When $a \ne 0$, there are two solutions to $(ax^2 + bx + c = 0)$ and they are
+$$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $$
