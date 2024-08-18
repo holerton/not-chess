@@ -232,18 +232,109 @@ func flip_attacked_squares(pos_array: Array):
 	for pos in pos_array:
 		get_node(pos).flip_attacked()
 
+func get_visited_array(pos: String):
+	var xy = coords_to_int(pos)
+	var visited = []
+	
+	for i in range(board_width + 2):
+		visited.append([])
+		visited[-1].resize(board_width + 2)
+		visited[-1].fill(false)
+	visited[xy[1]][xy[0]] = true
+	return visited
+	
+
+func get_blocks(k_avg: float, k_var: float, total: int):
+	var list = []
+	while total:
+		var new_num = max(min(int(gen.randfn(k_avg, k_var)), total), 1)
+		total -= new_num
+		list.append(new_num)
+	return list
+
+func has_enough_space(pos: String, size: int):
+	var square = get_node(pos)
+	if square.terrain != "White" and square.terrain != "Black":
+		return 0
+	
+	var visited = get_visited_array(pos)
+	
+	var square_queue = [pos]
+	var free_space = 1
+	while not square_queue.is_empty() and free_space < size:
+		var new_pos = square_queue.pop_front()
+		var neighbors = get_neighbors(new_pos, 1)
+		for neighbor in neighbors:
+			var xy = coords_to_int(neighbor)
+			square = get_node(neighbor)
+			if not visited[xy[1]][xy[0]]:
+				if square.terrain == "White" or square.terrain == "Black":
+					visited[xy[1]][xy[0]] = true
+					square_queue.append(neighbor)
+					free_space += 1
+					if free_space == size:
+						break
+	return free_space >= size
+
+func put_a_block(block_size: int, terrain: String):
+	var has_space = false
+	var new_square
+	while not has_space:
+		new_square = Board.int_to_coords([gen.randi_range(1, board_width), 
+		gen.randi_range(1, board_height)])
+		has_space = has_enough_space(new_square, block_size)
+	
+	var visited = get_visited_array(new_square)
+	var square_queue = [new_square]
+	get_node(new_square).set_terrain(terrain) 
+	block_size -= 1
+	while block_size > 0:
+		var new_pos = square_queue.pop_front()
+		var neighbors = get_neighbors(new_pos, 1)
+		for neighbor in neighbors:
+			var xy = coords_to_int(neighbor)
+			var square = get_node(neighbor)
+			if not visited[xy[1]][xy[0]]:
+				if square.terrain == "White" or square.terrain == "Black":
+					visited[xy[1]][xy[0]] = true
+					square_queue.append(neighbor)
+					get_node(neighbor).set_terrain(terrain)
+					block_size -= 1
+					if block_size == 0:
+						break
+	
+
 func randomize_terrain():
 	var terrains = ["Plain", "Forest", "Water", "Desert", "Marsh", "Mountain"]
-	var weights = [10, 17, 22, 26, 28, 30]
+	var board_size = board_height * board_width
+	
+	var k_min = [log(board_size) - 2, log(board_size) - 3, log(board_size) - 3,
+	log(board_size) - 4, log(board_size) - 4, log(board_size) - 4]
+	var k_max = [board_size / 16, board_size / 10, board_size / 10,
+	board_size / 32, board_size / 32, board_size / 32, board_size / 32]
+	
+	var weights = [10, 17, 22, 25, 28, 30]
 	var squares = get_children()
-	#var types = [0, 0, 0, 0, 0, 0]
-	for square in squares:
-		var rand_num = gen.randi() % 30
-		
-		for i in range(6):
-			if rand_num < weights[i]:
-				square.set_terrain(terrains[i])
-				#types[i] += 1
+	var total_squares = [0, 0, 0, 0, 0, 0]
+	for i in range(board_size):
+		var rand_num = gen.randi_range(0, 29)
+		for j in range(6):
+			if rand_num < weights[j]:
+				total_squares[j] += 1
 				break
-	#print(types)
-			
+	
+	var blocks = []
+	var sum_len = 0
+	for i in range(6):
+		var k_avg = (k_min[i] + k_max[i]) / 2
+		var k_var = (k_max[i] - k_avg) / 3
+		blocks.append(get_blocks(k_avg, k_var, total_squares[i]))
+		sum_len += len(blocks[-1])
+		print(blocks[-1])
+	
+	while sum_len:
+		var terrain_type = gen.randi_range(0, 5)
+		if not blocks[terrain_type].is_empty():
+			put_a_block(blocks[terrain_type].pop_front(), terrains[terrain_type])
+			sum_len -= 1
+	
