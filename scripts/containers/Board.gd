@@ -70,9 +70,15 @@ func add_to_the_map(pos: String, value: String):
 ## Deletes a piece from Square and map
 func clear_square(piece: BasePiece):
 	var pos = piece.coords
+	var square = get_node(pos)
 	add_to_the_map(pos, ".")
-	get_node(pos).remove_child(piece)
-	piece.queue_free()
+	var tween = get_tree().create_tween()
+	tween.tween_property(piece, "modulate", Color.RED, 0.15)
+	tween.tween_property(piece, "scale", Vector2(), 0.15)
+	tween.tween_callback(square.remove_child.bind(piece))
+	tween.tween_callback(piece.queue_free)
+	#get_node(pos).remove_child(piece)
+	#piece.queue_free()
 
 ## Replaces piece_to with piece_from
 func replace(piece_from: BasePiece, piece_to: BasePiece):
