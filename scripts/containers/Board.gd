@@ -185,11 +185,34 @@ func traverse(piece: BasePiece, to: String):
 	if piece != null:
 		var from = piece.coords
 		if is_in_bounds(to) and is_empty(to):
-			get_node(from).remove_child(piece)
+			animated_move(piece, to)
 			add_to_the_map(from, '.')
-			get_node(to).add_child(piece)
 			add_to_the_map(to, piece.shortname)
 			piece.move(to)
+
+## Calculates coordinates and makes an animation for the piece
+func animated_move(piece: BasePiece, to: String):
+	var square_from = piece.get_parent()
+	var square_to = get_node(to)
+	
+	var xy_from = coords_to_int(piece.coords)
+	var xy_to = coords_to_int(to)
+	
+	var loc_from = Vector2((xy_from[0] - 0.5) * square_x_size,
+	(xy_from[1] - 0.5) * square_y_size)
+	var loc_to = Vector2((xy_to[0] - 0.5) * square_x_size,
+	(xy_to[1] - 0.5) * square_y_size)
+	
+	var center = Vector2(square_x_size / 2, square_y_size / 2)
+	
+	var tween = get_tree().create_tween()
+	tween.tween_callback(square_from.remove_child.bind(piece))
+	tween.tween_callback(piece.set_position.bind(loc_from))
+	tween.tween_callback(add_child.bind(piece))
+	tween.tween_property(piece, "position", loc_to, 0.25)
+	tween.tween_callback(remove_child.bind(piece))
+	tween.tween_callback(piece.set_position.bind(center))
+	tween.tween_callback(square_to.add_child.bind(piece))
 
 ## Active and Attacked Squares
 
