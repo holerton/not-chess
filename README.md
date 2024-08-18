@@ -77,8 +77,8 @@ Terrain and weather both influence figures' movement, but terrain is static and 
 > $$ k_* $$ вызначаецца ў межах
 > $$ k_*^{min} - k_*^{max} $$
 >  у залежнасьці ад тыпу і size (усё float):
-$$k_p^{min}=ln(size)-2 \quad \quad k_p^{max}=\frac {size} {16}$$
-$$k_f^{min}=ln(size)-3 \quad \quad k_f^{max}=\frac {size} {10}$$
+$$k_p^{min}=ln(size)-2 \quad \quad k_p^{max}=\frac {size} {16}$$ \
+$$k_f^{min}=ln(size)-3 \quad \quad k_f^{max}=\frac {size} {10}$$ \
 $$k_w^{min}=ln(size)-3 \quad \quad k_w^{max}=\frac {size} {10}$$
 $$k_d^{min}=ln(size)-4 \quad \quad k_d^{max}=\frac {size} {32}$$
 $$k_s^{min}=ln(size)-4 \quad \quad k_s^{max}=\frac {size} {32}$$
