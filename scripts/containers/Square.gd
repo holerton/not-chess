@@ -11,7 +11,7 @@ var on_click: Callable = func():
 
 var state: int = 0
 var terrain: String = "Black"
-var colors: Array = [Color(Color.DARK_ORCHID, 0.7), Color(Color.CRIMSON, 0.7)]
+var colors: Array = [Color.ORANGE, Color.CRIMSON]
 const TERRAIN_COLORS: Dictionary = {"Plain": Color.LAWN_GREEN,
 "Forest": Color.FOREST_GREEN, "Water": Color.DODGER_BLUE,
 "Desert": Color.CORNSILK, "Marsh": Color.DARK_OLIVE_GREEN,
@@ -36,11 +36,12 @@ func _init(type: String, size: Vector2, name: String, signal_reciever: Callable)
 	add_child(panel)
 	
 	var selection_square = ColorRect.new()
-	selection_square.set_custom_minimum_size(Vector2(size[0] * 0.7, size[1] * 0.7))
+	selection_square.offset_top=45
+	selection_square.set_custom_minimum_size(Vector2(size[0], size[1] * 0.1))
 	selection_square.name = "Selection"
 	selection_square.visible = false
 	add_child(selection_square)
-	selection_square.layout_mode = 1
+	selection_square.layout_mode = 2
 	selection_square.anchors_preset = PRESET_CENTER
 
 func is_empty() -> bool:
