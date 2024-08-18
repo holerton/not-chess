@@ -73,11 +73,11 @@ Terrain and weather both influence figures' movement, but terrain is static and 
   
 Вызначаем колькасьць блокаў кожнага тыпу (мноства квадрацікаў, звязаных па старане). \
 
-   Для кожнага тыпу * колькасьць блокаў \
+   Для кожнага тыпу * колькасьць блокаў
  $$k_*$$
- вызначаецца ў межах \
+ вызначаецца ў межах
  $$k_*^{min} - k_*^{max}$$
-у залежнасьці ад тыпу і size (усё float): \
+у залежнасьці ад тыпу і size (усё float):
 <p align="center">
 $$k_p^{min}=ln(size)-2 \quad \quad k_p^{max}=\frac {size} {16}$$ \
 $$k_p^{min}=ln(size)-2 \quad \quad k_p^{max}=\frac {size} {16}$$ \
