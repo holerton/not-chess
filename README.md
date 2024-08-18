@@ -35,6 +35,10 @@ Nomads are peaceful people who travel through your battlefield. You can't attack
 
 ### Seasons
 
+There are four seasons: Winter, Spring, Summer, Autumn. Each season consists of four months, and each month is one turn of both players. This is an example schema of how seasons could infuence snow and rain for 10x10 board:
+<p align="center">
+  <img src="https://raw.githubusercontent.com/holerton/not-chess/master/readme_images/seasons.bmp" />
+</p>
 
 ### Terrain and weather
 Terrain and weather both influence figures' movement, but terrain is static and weather is moving.
