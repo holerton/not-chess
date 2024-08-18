@@ -44,14 +44,12 @@ Terrain and weather both influence figures' movement, but terrain is static and 
 
  - ### Terrain types
 > у парадку панiжэньня верагоднасьцi ўзнiкненьня
- 1. Plain (it's plain); LAWN_GREEN
- 2. Forest (archers can not shoot from forest, riders can not enter forest at all); FOREST_GREEN
- 3. Water: only ships can move on the water; DODGER_BLUE
- 4. Desert: rooks and archers skip turn after they step on this type of terrain (riders effectively change their horses to camels); CORNSILK
- 5. Marshes: rider gets -1 movement of what he has when he enters one of this types of terrain; DARK_OLIVE_GREEN
- 6. Mountain: any figure (including nomads) skips turn after it steps on this type of terrain. DARK_GRAY
-> колер выбару: DARK_ORCHID
-> колер атакi: CRIMSON
+ 1. Plain (it's plain);
+ 2. Forest (archers can not shoot from forest, riders can not enter forest at all); 
+ 3. Water: only ships can move on the water; 
+ 4. Desert: rooks and archers skip turn after they step on this type of terrain (riders effectively change their horses to camels);
+ 5. Marshes: rider gets -1 movement of what he has when he enters one of this types of terrain; 
+ 6. Mountain: any figure (including nomads) skips turn after it steps on this type of terrain.
 
  - ### Weather types
  1. Flood: same as swamp;
@@ -72,14 +70,8 @@ Terrain and weather both influence figures' movement, but terrain is static and 
   - Памер дошкі (size)
   
 Вызначаем колькасьць блокаў кожнага тыпу (мноства квадрацікаў, звязаных па старане).
-Для кожнага тыпу * колькасьць блокаў
-<p align="center">
-$$k_*$$
-</p>
-вызначаецца ў межах
-<p align="center">
-$$k_*^{min} - k_*^{max}$$
-</p>
+Для кожнага тыпу * колькасьць блокаў $k^{\*}$
+вызначаецца ў межах $k_{\*}^{min} - k_{\*}^{max}$
 у залежнасьці ад тыпу і size (усё float):
 <p align="center">
 $$k_p^{min}=ln(size)-2 \quad \quad k_p^{max}=\frac {size} {16}$$
@@ -103,34 +95,27 @@ $$k_s^{min}=ln(size)-4 \quad \quad k_s^{max}=\frac {size} {32}$$
 $$k_m^{min}=ln(size)-4 \quad \quad k_m^{max}=\frac {size} {32}$$
 </p>
 
-Цяпер мы маем \* , $ k_\*^{min}$ ,
-$k_\*^{max}$.
-Трэба выясніць колькі ўсяго блокаў і колькі ў кожным блоку квадрацікаў. Гэта можна зрабіць паралельна:
-Падлічваем
+Цяпер мы маем \* , 
+$k_{\*}^{min}$ ,
+$k_{\*}^{max}$.
+Трэба выясніць колькі ўсяго блокаў і колькі ў кожным блоку квадрацікаў. Гэта можна зрабіць паралельна. Падлічваем
 <p align="center">
 $$k_*^{avg}=\frac {k_*^{min}+k_*^{max}} {2} (float)$$
 </p>
 <p align="center">
 $$k_*^{var}=\frac {k_*^{max}-k_*^{avg}} {3} (float)$$
 </p>
-   У цыкле пакуль не скончацца квадрацікі нармальна (дзякуючы ўбудаванай функцыі 
-$ randfn(\mu,\sigma)$
- ) размяркоўваем іх:
+
+У цыкле пакуль не скончацца квадрацікі нармальна (дзякуючы ўбудаванай функцыі $randfn \left( \mu,\sigma \right) $) размяркоўваем іх:
+
 <p align="center">
 $$k_*=(float) randfn(k_*^{avg},k_*^{var})$$
 </p>
- - лічым колькі пхаць у першы блок: 
-$\frac {*} {k_*}$
-(
-$ int, round $
-)
- - калі
-$\frac {*} {k_*}>$
-квадрацікаў засталося, то блок апошні
- - інакш змяншаем
-$*_{засталося}$
-і ідзем у пачатак
-   
+
+- лічым колькі пхаць у першы блок: $\frac {\*} {k_\*}$($int, round $)
+- калі $\frac {\*} {k_\*}>$ квадрацікаў засталося, то блок апошні
+- інакш змяншаем $\*_{засталося}$ і ідзем у пачатак
+
 >   (гэта была простая частка)
 > ### About Weather generation
 >  - Wind considerably changes with seasons and slightly changes within seasons (randomly);
