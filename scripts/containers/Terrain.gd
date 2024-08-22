@@ -124,7 +124,7 @@ func get_blocks(k_avg: float, k_var: float, total: int):
 	var squares_left = total
 	while squares_left > 0:
 		var new_num = randfn(k_avg, k_var)
-		var next_block = min(round(total / new_num), squares_left)
+		var next_block = max(min(round(total / new_num), squares_left), 1)
 		squares_left -= next_block
 		list.append(next_block)
 	return list
