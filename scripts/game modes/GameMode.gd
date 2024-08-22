@@ -163,7 +163,7 @@ func final_selection(new_piece):
 		$ChessboardRect/Chessboard.flip_active_squares(active_chessboard_squares)
 	else:
 		$RightRect/PieceSpawner.enable_end_turn_button()
-		army_to_move = players[0].get_army().duplicate(true)
+		army_to_move = players[0].get_army()
 		move_army(null)
 
 ## Called when empty square on chessboard selected
@@ -174,7 +174,9 @@ func final_selection(new_piece):
 ## Sets a piece on the board and calls piece_added(). 
 func empty_square_selected(pos):
 	if players[0].has_piece(current_piece):
-		$ChessboardRect/Chessboard.traverse(current_piece, pos)
+		var square = $ChessboardRect/Chessboard.traverse(current_piece, pos)
+		if current_piece.skips_turn(square.terrain):
+			players[0].add_skipping_piece(current_piece)
 		piece_moved()
 	else:
 		current_piece.move(pos)
@@ -191,9 +193,10 @@ func piece_added():
 	players[0].spawn_piece(current_piece)
 	if current_piece.name == "Pawn":
 		set_current_piece(null)
+		players[0].clear_skipping_pieces()
 		end_turn()
 	else:
-		army_to_move = players[0].get_army().duplicate(true)
+		army_to_move = players[0].get_army()
 		move_army(current_piece)
 
 ## Called after piece moves to an empty square.
@@ -202,7 +205,7 @@ func piece_added():
 func piece_moved():
 	$RightRect/PieceSpawner.disable_cancel_selection_button()
 	clear_highlighted_squares()
-	attacked_chessboard_squares = current_piece.find_attackable()
+	attacked_chessboard_squares = current_piece.find_attackable($ChessboardRect/Chessboard)
 	if len(attacked_chessboard_squares) == 0:
 		move_army(current_piece)
 	else:
@@ -232,8 +235,8 @@ func existing_piece_selected(selected_piece):
 	
 	if current_piece != selected_piece:
 		set_current_piece(selected_piece)
-		active_chessboard_squares = current_piece.find_reachable()
-		attacked_chessboard_squares = current_piece.find_attackable()
+		active_chessboard_squares = current_piece.find_reachable($ChessboardRect/Chessboard)
+		attacked_chessboard_squares = current_piece.find_attackable($ChessboardRect/Chessboard)
 		flip_buffered_squares()
 		$RightRect/PieceSpawner.enable_cancel_selection_button()
 	
@@ -261,7 +264,7 @@ func piece_attacked(other_piece):
 		army_to_move.erase(current_piece)
 		set_current_piece(null)
 	if special_action:
-		var selected_squares = current_piece.special_selection()
+		var selected_squares = current_piece.special_selection($ChessboardRect/Chessboard)
 		active_chessboard_squares = selected_squares[0]
 		attacked_chessboard_squares = selected_squares[1]
 		flip_buffered_squares()
