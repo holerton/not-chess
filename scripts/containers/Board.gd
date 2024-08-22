@@ -195,6 +195,7 @@ func traverse(piece: BasePiece, to: String):
 			add_to_the_map(from, '.')
 			add_to_the_map(to, piece.shortname)
 			piece.move(to)
+		return get_node(to)
 
 ## Calculates coordinates and makes an animation for the piece
 func animated_move(piece: BasePiece, to: String):
@@ -236,3 +237,5 @@ func randomize_terrain():
 	var ter = Terrain.new()
 	ter.randomize_terrain(self, [10, 17, 22, 25, 28, 30])
 	
+func get_terrain(pos: String):
+	return get_node(pos).terrain

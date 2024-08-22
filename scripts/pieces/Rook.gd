@@ -19,10 +19,15 @@ func _init(color: String, coords: String):
 ## Returns an Array with two Arrays. 
 ## First contains coordinates of Squares to be activated (Rooks position)
 ## Second contains coordinates of Squares to be attacked (Attackable squares without pawns)
-func special_selection():
+func special_selection(board: Board):
 	var active_squares = [coords]
-	var attacked_squares = find_attackable()
+	var attacked_squares = find_attackable(board)
 	for square in attacked_squares:
 		if not Board.is_dark(square):
 			attacked_squares.erase(square)
 	return [active_squares, attacked_squares]
+
+func skips_turn(terrain: String):
+	if terrain == "Desert":
+		return true
+	return super(terrain)

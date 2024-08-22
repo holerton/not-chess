@@ -30,6 +30,9 @@ var special_action: bool = false
 ## Stores all textures for the sprite
 var textures: Array = [null]
 
+## Non-traversable terrains
+var forbidden_terrains: Array = ["Water"]
+
 ## Creates new piece given its color, coordinates in the container, position in the Square and name
 func _init(color: String, coords: String, name: String = "#"):
 	self.color = color
@@ -45,8 +48,8 @@ func clone() -> BasePiece:
 	return other
 
 ## Uses DFS to fill and return the Array with coordinates of all of the reachable squares. 
-func find_reachable() -> Array:
-	var xy = Board.coords_to_int(coords)
+func find_reachable(board: Board) -> Array:
+	var xy = board.coords_to_int(coords)
 	
 	var visited = []
 	for i in Global.board_height + 2:
@@ -59,33 +62,35 @@ func find_reachable() -> Array:
 	var reachable = [coords]
 	
 	while not square_queue.is_empty():
-		var square = square_queue.pop_front()
-		
+		var square = square_queue.reduce(func(a, b): return a if a[1] < b[1] else b)
+		square_queue.erase(square)
 		## When DFS reaches the point where distance equals to speed, return result
 		if square[1] == speed: 
 			return reachable
 		
 		square[1] += 1 ## Distance increase
-		var neighbors = Board.get_neighbors(square[0], 1)
+		var neighbors = board.get_neighbors(square[0], 1)
 		
 		for elem in neighbors: ## Going through neighbors
-			xy = Board.coords_to_int(elem)
+			xy = board.coords_to_int(elem)
 			
 			## Marking all of the visited squares (piece travels through black squares)
-			if Board.is_dark(elem) and not visited[xy[1]][xy[0]]:
+			if board.is_dark(elem) and not visited[xy[1]][xy[0]]:
 				visited[xy[1]][xy[0]] = true
-				
-				## If square is empty OR an enemy king, its reachable
-				if Board.is_empty(elem) or Board.is_enemy_king(color[0], elem):
-					reachable.append(elem)
-					square_queue.append([elem, square[1]])
-				elif Board.is_ally(color[0], elem):
-					square_queue.append([elem, square[1]])
+				var terrain = board.get_terrain(elem)
+				if terrain not in self.forbidden_terrains:
+					var dist = calc_distance(terrain, square[1])
+					## If square is empty OR an enemy king, its reachable
+					if board.is_empty(elem) or board.is_enemy_king(color[0], elem):
+						reachable.append(elem)
+						square_queue.append([elem, dist])
+					elif board.is_ally(color[0], elem):
+						square_queue.append([elem, dist])
 	return reachable
 
 ## Finds all squares, distance from coords to which is not greater then range
 ## Returns only squares, that are attackable. 
-func find_attackable():
+func find_attackable(board: Board):
 	var xy = Board.coords_to_int(coords)
 	
 	var visited = []
@@ -126,6 +131,9 @@ func find_attackable():
 func move(dest: String) -> void:
 	coords = dest
 
+func skips_turn(terrain: String):
+	return terrain == "Mountain"
+
 ## Attacks an enemy piece. If distance between them is 1, gets attacked by an enemy piece
 ## Returns true, if piece has a special action after an attack. Otherwise false
 func attack(enemy) -> bool:
@@ -143,3 +151,8 @@ func get_damage(damage: int) -> void:
 ## Returns true if health of the piece is greater then 0. Otherwise false
 func is_alive():
 	return health > 0
+
+func calc_distance(terrain: String, dist: int):
+	if terrain == "Mountain":
+		return self.speed
+	return dist

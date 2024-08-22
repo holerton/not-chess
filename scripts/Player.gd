@@ -20,6 +20,9 @@ var king: King = null
 ## Represents how many more army pieces can Player add to his army 
 var limit: int = 0
 
+## Array of pieces, that skip next turn
+var skipping_pieces: Array = []
+
 ## Creates a new Player with the given color
 func _init(color: String):
 	self.color = color
@@ -108,18 +111,25 @@ func get_possible_pieces():
 		result.append("Pawn")
 	return result
 
-## Returns an army array
+## Returns an army array without pieces that skip turn
 func get_army():
-	return army
+	var current_army = army.duplicate(true)
+	for piece in skipping_pieces:
+		current_army.erase(piece)
+	clear_skipping_pieces()
+	return current_army
+
+func clear_skipping_pieces():
+	skipping_pieces.clear()
 
 ## Returns true if army array contains any piece, false otherwise
 func has_army():
-	return not army.is_empty()
+	return army != skipping_pieces
 
 ## Returns true if king is not null, false otherwise
 func is_alive():
 	return king != null
-	
+
 func has_piece(piece: BasePiece):
 	if piece == king:
 		return true
@@ -128,3 +138,7 @@ func has_piece(piece: BasePiece):
 	if piece in army:
 		return true
 	return false
+
+## Adds piece to skipping_pieces
+func add_skipping_piece(piece: BasePiece):
+	skipping_pieces.append(piece)
