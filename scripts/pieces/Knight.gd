@@ -12,3 +12,9 @@ func _init(color: String, coords: String):
 	self.textures = [load("res://images/WKnight.svg") if color == "white"
 	else load("res://images/BKnight.svg")]
 	super(color, coords, "Night")
+	self.forbidden_terrains.append("Forest")
+	
+func calc_distance(terrain: String, dist: int):
+	if terrain == "Marsh":
+		return dist + 1
+	return super(terrain, dist)
