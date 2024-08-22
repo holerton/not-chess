@@ -27,6 +27,6 @@ func _ready():
 
 func end_turn():
 	for piece in auto_pieces:
-		var pos = piece.move_in_direction()
+		var pos = piece.move_in_direction($ChessboardRect/Chessboard)
 		$ChessboardRect/Chessboard.traverse(piece, pos)
 	super()
