@@ -104,23 +104,23 @@ script = ExtResource("2_cql01")
 layout_mode = 0
 offset_left = 5.0
 offset_top = 102.0
-offset_right = 45.0
+offset_right = 84.0
 offset_bottom = 191.0
 item_count = 3
-item_0/text = "6"
-item_1/text = "8"
-item_2/text = "10"
+item_0/text = "Small"
+item_1/text = "Average"
+item_2/text = "Large"
 
 [node name="ArmyLimit" type="ItemList" parent="."]
 layout_mode = 0
-offset_left = 354.0
+offset_left = 307.0
 offset_top = 103.0
 offset_right = 394.0
 offset_bottom = 192.0
 item_count = 3
-item_0/text = "1"
-item_1/text = "2"
-item_2/text = "3"
+item_0/text = "Small"
+item_1/text = "Average"
+item_2/text = "Large"
 
 [connection signal="pressed" from="SubmitButton" to="." method="_on_submit_button_pressed"]
 [connection signal="focus_exited" from="Width" to="." method="_on_size_changed"]
