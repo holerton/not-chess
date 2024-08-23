@@ -1,7 +1,7 @@
-extends ColorRect
+extends TextureRect
 class_name Square
 ## Class for the square of the PieceContainer. Square can contain a BasePiece.  
-## Uses ColorRect for the texture and Panel for tracking clicks.  
+## Uses TextureRect for the texture and Panel for tracking clicks.  
 
 signal square_clicked(square: Square)
 
@@ -12,10 +12,6 @@ var on_click: Callable = func():
 var state: int = 0
 var terrain: String = "Black"
 var colors: Array = [Color.ORANGE, Color.CRIMSON]
-const TERRAIN_COLORS: Dictionary = {"Plain": Color.LAWN_GREEN,
-"Forest": Color.FOREST_GREEN, "Water": Color.DODGER_BLUE,
-"Desert": Color.CORNSILK, "Marsh": Color.DARK_OLIVE_GREEN,
-"Mountain": Color.DARK_GRAY, "Black": Color.DARK_SLATE_GRAY, "White": Color.ALICE_BLUE}
 
 ## Constructor, takes three arguments: dark, size, name.
 ## dark defines whether the square is bright or dark;
@@ -24,9 +20,8 @@ const TERRAIN_COLORS: Dictionary = {"Plain": Color.LAWN_GREEN,
 ## Also creates an invisible Panel that reads clicks
 func _init(type: String, size: Vector2, name: String, signal_reciever: Callable):
 	self.terrain = type
-	
+	# set_textures(size)
 	square_clicked.connect(signal_reciever)
-	self.set_custom_minimum_size(size)
 	self.name = name
 	
 	var panel = Panel.new()
@@ -81,7 +76,7 @@ func set_terrain(type: String):
 
 ## Changes colors during the game according to the square state
 func _process(delta) -> void:
-	self.color = TERRAIN_COLORS[self.terrain]
+	self.texture = Global.TERRAIN_TEXTURES[self.terrain]
 	if self.state == 0:
 		$Selection.visible = false
 	else:
