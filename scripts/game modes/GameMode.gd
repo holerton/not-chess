@@ -267,10 +267,14 @@ func piece_attacked(other_piece):
 		army_to_move.erase(current_piece)
 		set_current_piece(null)
 	if special_action:
-		var selected_squares = current_piece.special_selection($ChessboardRect/Chessboard)
-		active_chessboard_squares = selected_squares[0]
+		var selected_squares = current_piece.special_selection($ChessboardRect/Chessboard, other_piece)
 		attacked_chessboard_squares = selected_squares[1]
-		flip_buffered_squares()
+		
+		if attacked_chessboard_squares.is_empty():
+			move_army(current_piece)
+		else:
+			active_chessboard_squares = selected_squares[0]
+			flip_buffered_squares()
 	else:
 		move_army(current_piece)
 
