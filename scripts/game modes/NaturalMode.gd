@@ -1,6 +1,7 @@
 extends GameMode
 
 var auto_pieces = []
+var skipping_auto_pieces = []
 
 func _ready():
 	super()
@@ -27,6 +28,11 @@ func _ready():
 
 func end_turn():
 	for piece in auto_pieces:
-		var pos = piece.move_in_direction($ChessboardRect/Chessboard)
-		$ChessboardRect/Chessboard.traverse(piece, pos)
+		if piece not in skipping_auto_pieces:
+			var pos = piece.move_in_direction($ChessboardRect/Chessboard)
+			var square = $ChessboardRect/Chessboard.traverse(piece, pos)
+			if piece.skips_turn(square.terrain):
+				skipping_auto_pieces.append(piece)
+		else:
+			skipping_auto_pieces.erase(piece)
 	super()
