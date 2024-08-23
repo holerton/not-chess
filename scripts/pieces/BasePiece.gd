@@ -65,7 +65,7 @@ func find_reachable(board: Board) -> Array:
 		var square = square_queue.reduce(func(a, b): return a if a[1] < b[1] else b)
 		square_queue.erase(square)
 		## When DFS reaches the point where distance equals to speed, return result
-		if square[1] == speed: 
+		if square[1] >= speed: 
 			return reachable
 		
 		square[1] += 1 ## Distance increase
