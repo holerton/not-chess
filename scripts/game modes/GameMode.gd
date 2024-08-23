@@ -24,6 +24,9 @@ func _ready():
 	players = [Player.new("white"), Player.new("black")]
 	var kings = $ChessboardRect/Chessboard.basic_setup()
 	$RightRect/PieceSpawner.basic_setup()
+	players[0].update_limits()
+	players[1].update_limits()
+	
 	players[0].spawn_piece(kings[0])
 	players[1].spawn_piece(kings[1])
 	

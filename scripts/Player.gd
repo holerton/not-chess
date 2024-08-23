@@ -142,3 +142,6 @@ func has_piece(piece: BasePiece):
 ## Adds piece to skipping_pieces
 func add_skipping_piece(piece: BasePiece):
 	skipping_pieces.append(piece)
+
+func update_limits():
+	self.available_pieces = Global.limits.duplicate(true)
