@@ -23,6 +23,9 @@ var limit: int = 0
 ## Array of pieces, that skip next turn
 var skipping_pieces: Array = []
 
+## Terrains on which you cannot spawn. True for army, false for pawns
+var inaccessible_terrains = {true: ["Water"], false: []}
+
 ## Creates a new Player with the given color
 func _init(color: String):
 	self.color = color
@@ -33,7 +36,7 @@ func _init(color: String):
 ## Uses DFS to find coordinates of all squares of the said color
 ## that are accessible to clone piece to
 ## Returns an Array of coordinates.
-func get_accessible(dark: bool):
+func get_accessible(board: Board, dark: bool):
 	if is_alive():
 		var accessible = []
 		
@@ -48,9 +51,10 @@ func get_accessible(dark: bool):
 			for neighbor in neighbors:
 				## Accessible square must be the searched color and empty
 				if Board.is_dark(neighbor) == dark and Board.is_empty(neighbor):
-					## If the square is not added yet, add
-					if neighbor not in accessible:
-						accessible.append(neighbor)
+					if board.get_terrain(neighbor) not in inaccessible_terrains[dark]:
+						## If the square is not added yet, add
+						if neighbor not in accessible:
+							accessible.append(neighbor)
 		return accessible
 
 ## Adds an instance of BasePiece to the Player
