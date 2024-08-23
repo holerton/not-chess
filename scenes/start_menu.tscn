@@ -1,74 +1,74 @@
 [gd_scene load_steps=4 format=3 uid="uid://cxnt1jumsiimc"]
 
-[ext_resource type="Script" path="res://scripts/start menu/start_menu.gd" id="1_acytp"]
-[ext_resource type="Script" path="res://scripts/start menu/Width.gd" id="1_t72cm"]
-[ext_resource type="Script" path="res://scripts/start menu/Height.gd" id="2_l0tx8"]
+[ext_resource type="Script" path="res://scripts/menus/start_menu.gd" id="1_acytp"]
+
+[sub_resource type="Gradient" id="Gradient_vkn3p"]
+offsets = PackedFloat32Array(0, 0.987013)
+colors = PackedColorArray(0.317647, 0.843137, 0.270588, 1, 0.0156863, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eyddo"]
+gradient = SubResource("Gradient_vkn3p")
+width = 400
+height = 200
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 1)
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
+anchors_preset = 0
+offset_right = 400.0
+offset_bottom = 200.0
+script = ExtResource("1_acytp")
+metadata/_edit_use_anchors_ = true
+
+[node name="BG" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("GradientTexture2D_eyddo")
+
+[node name="Submit" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -67.0
+offset_top = -59.0
+offset_right = 67.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Submit"
+
+[node name="GameModes" type="ItemList" parent="."]
+layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
+offset_left = -43.5
+offset_top = -30.0
+offset_right = 43.5
+offset_bottom = 30.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_acytp")
-metadata/_edit_use_anchors_ = true
-
-[node name="Width" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = -128.0
-offset_top = -96.0
-offset_right = 136.0
-offset_bottom = -65.0
-text = "8"
-placeholder_text = "5-30"
-script = ExtResource("1_t72cm")
-
-[node name="Height" type="LineEdit" parent="."]
-layout_mode = 0
-offset_left = -130.0
-offset_top = -25.0
-offset_right = 134.0
-offset_bottom = 6.0
-text = "8"
-placeholder_text = "5-18"
-script = ExtResource("2_l0tx8")
-
-[node name="Submit" type="Button" parent="."]
-layout_mode = 0
-offset_left = -64.0
-offset_top = 116.0
-offset_right = 50.0
-offset_bottom = 152.0
-text = "Submit"
-
-[node name="WidthLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = -127.0
-offset_top = -132.0
-offset_right = -87.0
-offset_bottom = -109.0
-text = "Board Width"
-
-[node name="HeightLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = -124.0
-offset_top = -56.0
-offset_right = -29.0
-offset_bottom = -33.0
-text = "Board Height"
-
-[node name="ItemList" type="ItemList" parent="."]
-layout_mode = 0
-offset_left = -126.0
-offset_top = 33.0
-offset_right = 131.0
-offset_bottom = 93.0
 allow_reselect = true
 item_count = 2
 item_0/text = "Classic"
 item_1/text = "Natural"
+
+[node name="GameModeLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Select Game Mode"
 
 [connection signal="pressed" from="Submit" to="." method="_on_submit_pressed"]
