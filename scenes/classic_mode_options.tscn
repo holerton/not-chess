@@ -1,0 +1,79 @@
+[gd_scene load_steps=4 format=3 uid="uid://ykp1lttgk57e"]
+
+[ext_resource type="Script" path="res://scripts/menus/classic_mode_options.gd" id="1_vgqow"]
+
+[sub_resource type="Gradient" id="Gradient_rtwdi"]
+colors = PackedColorArray(0.317647, 0.843137, 0.270588, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ajdeo"]
+gradient = SubResource("Gradient_rtwdi")
+width = 400
+height = 200
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[node name="ClassicModeOptions" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vgqow")
+
+[node name="BG" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("GradientTexture2D_ajdeo")
+
+[node name="WidthLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 20.0
+offset_right = 110.0
+offset_bottom = 45.0
+text = "Board Width
+"
+
+[node name="HeightLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 290.0
+offset_top = 20.0
+offset_right = 395.0
+offset_bottom = 45.0
+text = "Board Height
+"
+
+[node name="WidthOptions" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 35.0
+offset_top = 55.0
+offset_right = 75.0
+offset_bottom = 145.0
+item_count = 3
+item_0/text = "8"
+item_1/text = "16"
+item_2/text = "24"
+
+[node name="HeightOptions" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 321.0
+offset_top = 55.0
+offset_right = 361.0
+offset_bottom = 120.0
+item_count = 2
+item_0/text = "8"
+item_1/text = "16"
+
+[node name="SubmitButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 165.0
+offset_top = 80.0
+offset_right = 235.0
+offset_bottom = 120.0
+text = "Submit"
+
+[connection signal="pressed" from="SubmitButton" to="." method="_on_submit_button_pressed"]

@@ -1,0 +1,127 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0a6xput3vone"]
+
+[ext_resource type="Script" path="res://scripts/menus/natural_mode_options.gd" id="1_ew3q2"]
+[ext_resource type="Script" path="res://scripts/menus/Width.gd" id="2_cql01"]
+
+[sub_resource type="Gradient" id="Gradient_rtwdi"]
+colors = PackedColorArray(0.317647, 0.843137, 0.270588, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ajdeo"]
+gradient = SubResource("Gradient_rtwdi")
+width = 400
+height = 200
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+metadata/_snap_enabled = true
+
+[node name="NaturalModeOptions" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ew3q2")
+
+[node name="BG" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(400, 200)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("GradientTexture2D_ajdeo")
+
+[node name="WidthLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 104.0
+offset_bottom = 29.0
+text = "Board Width
+"
+
+[node name="PawnLimitLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 74.0
+offset_right = 102.0
+offset_bottom = 99.0
+text = "Pawn Limit
+"
+
+[node name="ArmyLimitLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 308.0
+offset_top = 78.0
+offset_right = 408.0
+offset_bottom = 103.0
+text = "Army Limit
+"
+
+[node name="HeightLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 296.0
+offset_top = 5.0
+offset_right = 401.0
+offset_bottom = 30.0
+text = "Board Height
+"
+
+[node name="SubmitButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -35.0
+offset_top = -40.0
+offset_right = 35.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Submit"
+
+[node name="Width" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 30.0
+offset_right = 107.0
+offset_bottom = 61.0
+text = "8"
+placeholder_text = "5-30"
+script = ExtResource("2_cql01")
+
+[node name="Height" type="LineEdit" parent="."]
+layout_mode = 0
+offset_left = 295.0
+offset_top = 29.0
+offset_right = 400.0
+offset_bottom = 60.0
+text = "8"
+placeholder_text = "5-18"
+script = ExtResource("2_cql01")
+
+[node name="PawnLimit" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 102.0
+offset_right = 45.0
+offset_bottom = 191.0
+item_count = 3
+item_0/text = "6"
+item_1/text = "8"
+item_2/text = "10"
+
+[node name="ArmyLimit" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 354.0
+offset_top = 103.0
+offset_right = 394.0
+offset_bottom = 192.0
+item_count = 3
+item_0/text = "1"
+item_1/text = "2"
+item_2/text = "3"
+
+[connection signal="pressed" from="SubmitButton" to="." method="_on_submit_button_pressed"]
+[connection signal="focus_exited" from="Width" to="." method="_on_size_changed"]
+[connection signal="focus_exited" from="Height" to="." method="_on_size_changed"]
