@@ -105,9 +105,9 @@ func remove_if_dead(piece: BasePiece):
 
 ## Returns an Array with the names of all the pieces, 
 ## that are available to the Player
-func get_possible_pieces():
+func get_possible_pieces(board: Board):
 	var result = []
-	if limit > 0:
+	if limit > 0 and not get_accessible(board, true).is_empty():
 		for piece in ["Rook", "Bishop", "Night"]:
 			if available_pieces[piece] > 0:
 				result.append(piece)
