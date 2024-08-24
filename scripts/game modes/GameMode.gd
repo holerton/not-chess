@@ -29,8 +29,6 @@ func _ready():
 	
 	players[0].spawn_piece(kings[0])
 	players[1].spawn_piece(kings[1])
-	
-	start_turn()
 
 ## Adds children, sets every part of the gui in its place
 func construct_gui():
@@ -115,7 +113,7 @@ func start_turn():
 	$RightRect/PieceSpawner.disable_end_turn_button()
 	$RightRect/PieceSpawner.disable_cancel_selection_button()
 	if players[0].is_alive() and players[1].is_alive():
-		var pieces = players[0].get_possible_pieces()
+		var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)
 		if players[0].has_army():
 			$RightRect/PieceSpawner.enable_move_army_button()
 		$RightRect/PieceSpawner.flip_active_squares(pieces, players[0].color)
@@ -158,7 +156,7 @@ func end_turn():
 func final_selection(new_piece):
 	$RightRect/PieceSpawner.disable_move_army_button()
 	$RightRect/PieceSpawner.enable_cancel_selection_button()
-	var pieces = players[0].get_possible_pieces()
+	var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)
 	$RightRect/PieceSpawner.flip_active_squares(pieces, players[0].color)	
 	if new_piece != null:
 		set_current_piece(new_piece)
