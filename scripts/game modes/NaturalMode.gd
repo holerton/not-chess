@@ -25,6 +25,8 @@ func _ready():
 	for i in range(num_of_zebras) :
 		auto_pieces.append(Zebra.new("neutral", positions[i]))
 		$ChessboardRect/Chessboard.set_piece(auto_pieces[-1])
+	
+	start_turn()
 
 func end_turn():
 	for piece in auto_pieces:
