@@ -1,13 +1,13 @@
 extends Control
+class_name PieChart
 
-var Values : Dictionary
+var values : Dictionary
 
 var colors: Array
 var current = 12
 
-func _ready():
-	get_window().size = Vector2(600, 600)
-	set_custom_minimum_size(Vector2(600, 600))
+func _init(size: Vector2):
+	set_custom_minimum_size(size)
 	self.colors = [Color.html("#64e571"), 
 	Color.html("#b6ff55"), Color.html("#86ff64"), Color.html("#39db0c"),
 	Color.html("#febd00"), Color.html("#fb5700"), Color.html("#ff03ba"), 
@@ -16,7 +16,7 @@ func _ready():
 	Color.html("#1120d3"), Color.html("#7b28b8"), Color.html("#23cbe5")
 	]
 	for i in range(16):
-		Values[i] = 1
+		self.values[i] = 1
 
 func draw_circle_arc_poly(center, radius, angle_from, angle_to, color):
 	var nb_points = 40
@@ -27,27 +27,21 @@ func draw_circle_arc_poly(center, radius, angle_from, angle_to, color):
 		points_arc.push_back(center + Vector2(cos(angle_point), sin(angle_point)) * radius)
 	draw_colored_polygon(points_arc, color)
 
-func select_month(month: int):
+func change_month():
 	for i in range(len(colors)):
-		colors[i].a = 0 ## Change opacity value here
-	colors[month].a = 1
-
-func _draw():
-	var center = Vector2(size.x/2, size.y/2)
-	var radius = min(size.x, size.y)/4 
-	var previousAngle : float = 0
-	var angle_inc = 360 / 16.0
-	
-	for i in Values:
-		if Values[i] > 0.0:
-			draw_circle_arc_poly( center, radius,
-			previousAngle, previousAngle + angle_inc, colors[i])
-			previousAngle += angle_inc
-
-func _process(_delta):
-	select_month(current)
+		colors[i].a = 0.1 ## Change opacity value here
+	colors[current].a = 1
 	current += 1
 	current %= 16
 	queue_redraw()
-	OS.delay_msec(500)
+
+func _draw():
+	var center = Vector2(size.x/2, size.y/2)
+	var radius = min(size.x, size.y) / 2
+	var previousAngle : float = 0
+	var angle_inc = 360 / 16.0
 	
+	for i in values:
+		draw_circle_arc_poly( center, radius,
+		previousAngle, previousAngle + angle_inc, colors[i])
+		previousAngle += angle_inc
