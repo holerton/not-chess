@@ -5,12 +5,14 @@ var skipping_auto_pieces = []
 var season_counter = 0
 var seasons: PieChart
 var terrain_map: Dictionary
+var climate: Climate
+
 func _ready():
 	super()
 	$RightRect/PieceSpawner.anchors_preset = PRESET_CENTER_TOP
-	
 	self.terrain_map = $ChessboardRect/Chessboard.randomize_terrain()
-	
+	self.climate = Climate.new(self.terrain_map)
+	print(self.climate.initial_climate())
 	var size = Global.board_height * Global.board_width 
 	var num_of_zebras = min(size / 25, 16) # 64 / 25 = 2
 	
@@ -49,6 +51,7 @@ func end_turn():
 		else:
 			skipping_auto_pieces.erase(piece)
 	super()
-	season_counter = (season_counter + 1) % 2
+	season_counter += 1
 	if season_counter % 2 == 0:
 		self.seasons.change_month()
+		print(self.climate.calc_climate(season_counter / 2))
