@@ -235,7 +235,8 @@ func flip_attacked_squares(pos_array: Array):
 	
 func randomize_terrain():
 	var ter = Terrain.new()
-	ter.randomize_terrain(self, [10, 17, 22, 25, 28, 30])
+	var terrains = ter.randomize_terrain(self, [10, 17, 22, 25, 28, 30])
+	return terrains
 	
 func get_terrain(pos: String):
 	return get_node(pos).terrain

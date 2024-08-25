@@ -3,6 +3,8 @@ class_name Terrain
 ## Terrain generation
 
 var chessboard: Board
+var terrains: Dictionary = {"Plain": [], "Forest": [], "Water": [], 
+"Desert": [], "Marsh": [], "Mountain": []}
 
 ## Returns neighbors of a given square on a component
 func get_neighbors(component: Array, xy: Array) -> Array:
@@ -96,7 +98,11 @@ func fill_terrain_block(full_board: Array, component: Array, num: int, terrain: 
 				visited[ind] = true
 				options.append(neighbor)
 		options.erase(new_square)
-		chessboard.get_node(Board.int_to_coords(new_square)).set_terrain(terrain)
+		
+		var pos = Board.int_to_coords(new_square)
+		chessboard.get_node(pos).set_terrain(terrain)
+		terrains[terrain].append(pos)
+	
 	for sq in block_squares:
 		ind = full_board.find(sq)
 		full_board[ind][2] = false
@@ -198,4 +204,5 @@ func randomize_terrain(board: Board, cum_weights: Array):
 		var new_terrain = terrains[randi() % 6]
 		print(len(comp), new_terrain)
 		fill_terrain_block(full_board, comp, len(comp), new_terrain)
+	return self.terrains
 	
