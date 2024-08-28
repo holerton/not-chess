@@ -176,7 +176,11 @@ func final_selection(new_piece):
 ## Sets a piece on the board and calls piece_added(). 
 func empty_square_selected(pos):
 	if players[0].has_piece(current_piece):
-		var square = $ChessboardRect/Chessboard.traverse(current_piece, pos)
+		var tween = create_tween()
+		tween.connect("finished", finish_move.bind([current_piece]))
+		$ChessboardRect/Chessboard.traverse(current_piece, pos)
+		animated_move(current_piece, pos, tween)
+		
 		piece_moved()
 	else:
 		current_piece.set_coords(pos)
@@ -257,9 +261,11 @@ func piece_attacked(other_piece):
 	clear_highlighted_squares()
 	var special_action = current_piece.attack(other_piece)
 	if players[1].remove_if_dead(other_piece):
-		$ChessboardRect/Chessboard.clear_square(other_piece)
+		# $ChessboardRect/Chessboard.clear_square(other_piece)
+		animated_death(other_piece)
 	if players[0].remove_if_dead(current_piece):
-		$ChessboardRect/Chessboard.clear_square(current_piece)
+		# $ChessboardRect/Chessboard.clear_square(current_piece)
+		animated_death(current_piece)
 		army_to_move.erase(current_piece)
 		set_current_piece(null)
 	if special_action:
@@ -290,3 +296,22 @@ func _on_cancel_selection():
 		clear_highlighted_squares()
 		set_current_piece(null)
 		start_turn()
+
+func animated_move(piece: BasePiece, to: String, tween: Tween):
+	var xy_to = Board.coords_to_int(to)
+	var loc_to = Vector2((xy_to[0] - 0.5) * Global.tile_size,
+	(xy_to[1] - 0.5) * Global.tile_size)
+	
+	tween.tween_property(piece, "position", loc_to, 0.25)
+
+func finish_move(moved_pieces: Array):
+	for piece in moved_pieces:
+		$ChessboardRect/Chessboard.remove_child(piece)
+		piece.set_position(Vector2(Global.tile_size / 2, Global.tile_size / 2))
+		$ChessboardRect/Chessboard.get_node(piece.coords).add_child(piece)
+
+func animated_death(piece: BasePiece):
+	var tween = create_tween()
+	tween.connect("finished", $ChessboardRect/Chessboard.clear_square.bind(piece))
+	tween.tween_property(piece, "modulate", Color.RED, 0.15)
+	tween.tween_property(piece, "scale", Vector2(), 0.15)
