@@ -12,6 +12,7 @@ var on_click: Callable = func():
 var state: int = 0
 var terrain: String = "Black"
 var colors: Array = [Color.ORANGE, Color.CRIMSON]
+var weather: String = "None"
 
 ## Constructor, takes three arguments: dark, size, name.
 ## dark defines whether the square is bright or dark;
@@ -20,7 +21,7 @@ var colors: Array = [Color.ORANGE, Color.CRIMSON]
 ## Also creates an invisible Panel that reads clicks
 func _init(type: String, size: Vector2, name: String, signal_reciever: Callable):
 	self.terrain = type
-	# set_textures(size)
+	
 	square_clicked.connect(signal_reciever)
 	self.name = name
 	
@@ -58,6 +59,9 @@ func flip_attacked() -> void:
 	#$Selection.color = Color(Color.CRIMSON, 0.7) 
 	#$Selection.visible = not $Selection.visible
 
+func flip_weather(weather: String) -> void:
+	self.weather = "None" if self.weather == weather else weather 
+
 func get_piece() -> BasePiece:
 	if not is_empty():
 		return get_child(2)
@@ -76,7 +80,7 @@ func set_terrain(type: String):
 
 ## Changes colors during the game according to the square state
 func _process(delta) -> void:
-	self.texture = Global.TERRAIN_TEXTURES[self.terrain]
+	self.texture = Global.TERRAIN_TEXTURES[self.terrain][self.weather]
 	if self.state == 0:
 		$Selection.visible = false
 	else:

@@ -77,8 +77,6 @@ func clear_square(piece: BasePiece):
 	tween.tween_property(piece, "scale", Vector2(), 0.15)
 	tween.tween_callback(square.remove_child.bind(piece))
 	tween.tween_callback(piece.queue_free)
-	#get_node(pos).remove_child(piece)
-	#piece.queue_free()
 
 ## Replaces piece_to with piece_from
 func replace(piece_from: BasePiece, piece_to: BasePiece):
@@ -194,7 +192,7 @@ func traverse(piece: BasePiece, to: String):
 			animated_move(piece, to)
 			add_to_the_map(from, '.')
 			add_to_the_map(to, piece.shortname)
-			piece.move(to)
+			piece.move(to, self)
 		return get_node(to)
 
 ## Calculates coordinates and makes an animation for the piece
@@ -232,7 +230,17 @@ func flip_active_squares(pos_array: Array):
 func flip_attacked_squares(pos_array: Array):
 	for pos in pos_array:
 		get_node(pos).flip_attacked()
-	
+
+func flip_weather(weather_dict: Dictionary):
+	var cleared_squares = []
+	for weather in weather_dict:
+		for square in weather_dict[weather]:
+			if get_terrain(square) == "Water" and get_weather(square) == "Snow":
+				if not is_empty(square):
+					cleared_squares.append(square)
+			get_node(square).flip_weather(weather)
+	return cleared_squares
+
 func randomize_terrain():
 	var ter = Terrain.new()
 	var terrains = ter.randomize_terrain(self, [10, 17, 22, 25, 28, 30])
@@ -240,3 +248,9 @@ func randomize_terrain():
 	
 func get_terrain(pos: String):
 	return get_node(pos).terrain
+
+func get_weather(pos: String):
+	return get_node(pos).weather
+
+func get_piece(pos: String):
+	return get_node(pos).get_piece()
