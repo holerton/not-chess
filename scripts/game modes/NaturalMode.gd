@@ -1,7 +1,6 @@
 extends GameMode
 
 var auto_pieces = []
-var skipping_auto_pieces = []
 var season_counter = 0
 var seasons: PieChart
 var terrain_map: Dictionary
@@ -12,7 +11,7 @@ func _ready():
 	$RightRect/PieceSpawner.anchors_preset = PRESET_CENTER_TOP
 	self.terrain_map = $ChessboardRect/Chessboard.randomize_terrain()
 	self.climate = Climate.new(self.terrain_map)
-	print(self.climate.initial_climate())
+	$ChessboardRect/Chessboard.flip_weather(self.climate.initial_climate())
 	var size = Global.board_height * Global.board_width 
 	var num_of_zebras = min(size / 25, 16) # 64 / 25 = 2
 	
@@ -43,15 +42,27 @@ func _ready():
 
 func end_turn():
 	for piece in auto_pieces:
-		if piece not in skipping_auto_pieces:
+		if piece.speed > 0:
 			var pos = piece.move_in_direction($ChessboardRect/Chessboard)
-			var square = $ChessboardRect/Chessboard.traverse(piece, pos)
-			if piece.skips_turn(square.terrain):
-				skipping_auto_pieces.append(piece)
+			$ChessboardRect/Chessboard.traverse(piece, pos)
 		else:
-			skipping_auto_pieces.erase(piece)
+			piece.skip_turn()
 	super()
-	season_counter += 1
+	season_counter = (season_counter + 1) % 32
 	if season_counter % 2 == 0:
 		self.seasons.change_month()
-		print(self.climate.calc_climate(season_counter / 2))
+		var cleared_squares = $ChessboardRect/Chessboard.flip_weather(
+			self.climate.calc_climate(season_counter / 2)
+		)
+		for square in cleared_squares:
+			var piece = $ChessboardRect/Chessboard.get_piece(square)
+			if piece.name != "Pawn" and piece.name != "King":
+				piece.get_damage(piece.health)
+				$ChessboardRect/Chessboard.clear_square(piece)
+				if players[0].has_piece(piece):
+					players[0].remove_if_dead(piece)
+				elif players[1].has_piece(piece):
+					players[1].remove_if_dead(piece)
+				else:
+					auto_pieces.erase(piece)
+		
