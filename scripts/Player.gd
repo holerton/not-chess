@@ -21,10 +21,11 @@ var king: King = null
 var limit: int = 0
 
 ## Array of pieces, that skip next turn
-var skipping_pieces: Array = []
+var skipping_pieces: Dictionary = {}
 
 ## Terrains on which you cannot spawn. True for army, false for pawns
-var inaccessible_terrains = {true: ["Water"], false: []}
+## TODO: Replace with terrain_weather_rules from BasePiece
+var inaccessible_terrains = {true: [["Water", "None"]], false: []}
 
 ## Creates a new Player with the given color
 func _init(color: String):
@@ -51,7 +52,9 @@ func get_accessible(board: Board, dark: bool):
 			for neighbor in neighbors:
 				## Accessible square must be the searched color and empty
 				if Board.is_dark(neighbor) == dark and Board.is_empty(neighbor):
-					if board.get_terrain(neighbor) not in inaccessible_terrains[dark]:
+					var terrain = board.get_terrain(neighbor)
+					var weather = board.get_weather(neighbor)
+					if [terrain, weather] not in inaccessible_terrains[dark]:
 						## If the square is not added yet, add
 						if neighbor not in accessible:
 							accessible.append(neighbor)
@@ -115,20 +118,26 @@ func get_possible_pieces(board: Board):
 		result.append("Pawn")
 	return result
 
+func skip_turn():
+	for piece in army:
+		piece.skip_turn()
+
 ## Returns an army array without pieces that skip turn
 func get_army():
-	var current_army = army.duplicate(true)
-	for piece in skipping_pieces:
-		current_army.erase(piece)
-	clear_skipping_pieces()
+	var current_army = []
+	for piece in army:
+		if piece.speed > 0:
+			current_army.append(piece)
+		else:
+			piece.skip_turn()
 	return current_army
-
-func clear_skipping_pieces():
-	skipping_pieces.clear()
 
 ## Returns true if army array contains any piece, false otherwise
 func has_army():
-	return army != skipping_pieces
+	for piece in army:
+		if piece.speed > 0:
+			return true
+	return false
 
 ## Returns true if king is not null, false otherwise
 func is_alive():
@@ -144,8 +153,8 @@ func has_piece(piece: BasePiece):
 	return false
 
 ## Adds piece to skipping_pieces
-func add_skipping_piece(piece: BasePiece):
-	skipping_pieces.append(piece)
+func add_skipping_piece(piece: BasePiece, skips: int):
+	skipping_pieces[piece] = skips
 
 func update_limits():
 	self.available_pieces = Global.limits.duplicate(true)

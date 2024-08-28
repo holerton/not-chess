@@ -177,11 +177,9 @@ func final_selection(new_piece):
 func empty_square_selected(pos):
 	if players[0].has_piece(current_piece):
 		var square = $ChessboardRect/Chessboard.traverse(current_piece, pos)
-		if current_piece.skips_turn(square.terrain):
-			players[0].add_skipping_piece(current_piece)
 		piece_moved()
 	else:
-		current_piece.move(pos)
+		current_piece.set_coords(pos)
 		$ChessboardRect/Chessboard.set_piece(current_piece)
 		piece_added()
 
@@ -194,8 +192,7 @@ func piece_added():
 	$RightRect/PieceSpawner.enable_end_turn_button()
 	players[0].spawn_piece(current_piece)
 	if current_piece.name == "Pawn":
-		set_current_piece(null)
-		players[0].clear_skipping_pieces()
+		players[0].skip_turn()
 		end_turn()
 	else:
 		army_to_move = players[0].get_army()
