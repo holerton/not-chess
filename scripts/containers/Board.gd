@@ -69,14 +69,9 @@ func add_to_the_map(pos: String, value: String):
 
 ## Deletes a piece from Square and map
 func clear_square(piece: BasePiece):
-	var pos = piece.coords
-	var square = get_node(pos)
-	add_to_the_map(pos, ".")
-	var tween = get_tree().create_tween()
-	tween.tween_property(piece, "modulate", Color.RED, 0.15)
-	tween.tween_property(piece, "scale", Vector2(), 0.15)
-	tween.tween_callback(square.remove_child.bind(piece))
-	tween.tween_callback(piece.queue_free)
+	add_to_the_map(piece.coords, ".")
+	get_node(piece.coords).remove_child(piece)
+	piece.queue_free()
 
 ## Replaces piece_to with piece_from
 func replace(piece_from: BasePiece, piece_to: BasePiece):
@@ -187,37 +182,18 @@ static func distance(from: String, to: String) -> int:
 ## Moves a piece to a square, clears up previous square
 func traverse(piece: BasePiece, to: String):
 	if piece != null:
-		var from = piece.coords
 		if is_in_bounds(to) and is_empty(to):
-			animated_move(piece, to)
-			add_to_the_map(from, '.')
+			
+			var xy_from = Board.coords_to_int(piece.coords)
+			var loc_from = Vector2((xy_from[0] - 0.5) * Global.tile_size,
+			(xy_from[1] - 0.5) * Global.tile_size)
+			get_node(piece.coords).remove_child(piece)
+			piece.set_position(loc_from)
+			add_child(piece)
+			
+			add_to_the_map(piece.coords, '.')
 			add_to_the_map(to, piece.shortname)
 			piece.move(to, self)
-		return get_node(to)
-
-## Calculates coordinates and makes an animation for the piece
-func animated_move(piece: BasePiece, to: String):
-	var square_from = piece.get_parent()
-	var square_to = get_node(to)
-	
-	var xy_from = coords_to_int(piece.coords)
-	var xy_to = coords_to_int(to)
-	
-	var loc_from = Vector2((xy_from[0] - 0.5) * square_x_size,
-	(xy_from[1] - 0.5) * square_y_size)
-	var loc_to = Vector2((xy_to[0] - 0.5) * square_x_size,
-	(xy_to[1] - 0.5) * square_y_size)
-	
-	var center = Vector2(square_x_size / 2, square_y_size / 2)
-	
-	var tween = get_tree().create_tween()
-	tween.tween_callback(square_from.remove_child.bind(piece))
-	tween.tween_callback(piece.set_position.bind(loc_from))
-	tween.tween_callback(add_child.bind(piece))
-	tween.tween_property(piece, "position", loc_to, 0.25)
-	tween.tween_callback(remove_child.bind(piece))
-	tween.tween_callback(piece.set_position.bind(center))
-	tween.tween_callback(square_to.add_child.bind(piece))
 
 ## Active and Attacked Squares
 
