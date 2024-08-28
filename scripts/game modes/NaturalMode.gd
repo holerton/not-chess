@@ -41,13 +41,25 @@ func _ready():
 	start_turn()
 
 func end_turn():
+	var tween = get_tree().create_tween()
+	var moved_pieces = []
+	tween.connect("finished", finish_auto_move.bind(moved_pieces))
+	tween.set_parallel()
 	for piece in auto_pieces:
 		if piece.speed > 0:
 			var pos = piece.move_in_direction($ChessboardRect/Chessboard)
-			$ChessboardRect/Chessboard.traverse(piece, pos)
+			if pos != piece.coords:
+				animated_move(piece, pos, tween)
+				$ChessboardRect/Chessboard.traverse(piece, pos)
+				moved_pieces.append(piece)
 		else:
 			piece.skip_turn()
-	super()
+
+func finish_auto_move(moved_pieces: Array):
+	finish_move(moved_pieces)
+	change_climate()
+
+func change_climate():
 	season_counter = (season_counter + 1) % 32
 	if season_counter % 2 == 0:
 		self.seasons.change_month()
@@ -58,11 +70,12 @@ func end_turn():
 			var piece = $ChessboardRect/Chessboard.get_piece(square)
 			if piece.name != "Pawn" and piece.name != "King":
 				piece.get_damage(piece.health)
-				$ChessboardRect/Chessboard.clear_square(piece)
+				animated_death(piece)
 				if players[0].has_piece(piece):
 					players[0].remove_if_dead(piece)
 				elif players[1].has_piece(piece):
 					players[1].remove_if_dead(piece)
 				else:
 					auto_pieces.erase(piece)
-		
+	super.end_turn()
+	
