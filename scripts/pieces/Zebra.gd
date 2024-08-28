@@ -7,5 +7,6 @@ class_name Zebra
 ## Also sets its textures.
 func _init(color: String, coords: String):
 	self.textures = [load("res://images/Zebra.svg")]
-	super(color, coords, "Zebra")
 	self.speed = 1
+	self.weather_rules["Snow"] = 0
+	super(color, coords, "Zebra")

@@ -11,10 +11,10 @@ func _init(color: String, coords: String):
 	self.damage = 1
 	self.textures = [load("res://images/WKnight.svg") if color == "white"
 	else load("res://images/BKnight.svg")]
+	self.terrain_rules["Forest"] = INF
+	self.terrain_rules["Marsh"] = 1
 	super(color, coords, "Night")
-	self.forbidden_terrains.append("Forest")
-	
-func calc_distance(terrain: String, dist: int):
-	if terrain == "Marsh":
-		return dist + 1
-	return super(terrain, dist)
+
+func calc_next_turn_speed(terrain: String, weather: String, dist: int):
+	super(terrain, weather, dist)
+	self.speed += int(terrain == "Marsh")
