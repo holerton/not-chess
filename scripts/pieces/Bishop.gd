@@ -11,12 +11,9 @@ func _init(color: String, coords: String):
 	self.damage = 1
 	self.textures = [load("res://images/WBishop.svg") if color == "white"
 	else load("res://images/BBishop.svg")]
+	self.terrain_rules["Desert"] = self.speed
+	self.weather_rules["Snow"] = 0
 	super(color, coords, "Bishop")
-
-func skips_turn(terrain: String):
-	if terrain == "Desert":
-		return true
-	return super(terrain)
 
 func find_attackable(board: Board):
 	if board.get_terrain(coords) == "Forest":

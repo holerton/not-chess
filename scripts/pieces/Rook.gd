@@ -13,6 +13,7 @@ func _init(color: String, coords: String):
 	self.special_action = true
 	self.textures = [load("res://images/WRookU.svg") if color == "white" else load("res://images/BRookU.svg"),
 	load("res://images/WRook.svg") if color == "white" else load("res://images/BRook.svg")]
+	self.terrain_rules["Desert"] = self.speed
 	super(color, coords, "Rook")
 	
 
@@ -27,8 +28,3 @@ func special_selection(board: Board, attacked_piece: BasePiece):
 		if Board.is_dark(square) and square != attacked_piece.coords:
 			attacked_squares.append(square)
 	return [active_squares, attacked_squares]
-
-func skips_turn(terrain: String):
-	if terrain == "Desert":
-		return true
-	return super(terrain)
