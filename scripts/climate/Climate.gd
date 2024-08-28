@@ -11,12 +11,18 @@ func initial_climate():
 	var affected_squares: Dictionary = {}
 	for weather in weathers:
 		var changed_squares = weather.initial_weather()
-		affected_squares[weather.name] = changed_squares
+		if weather.name in affected_squares:
+			affected_squares[weather.name].append_array(changed_squares)
+		else:
+			affected_squares[weather.name] = changed_squares
 	return affected_squares
 
 func calc_climate(month: int):
-	var affected_squares: Dictionary = {}	
+	var affected_squares: Dictionary = {}
 	for weather in weathers:
 		var changed_squares = weather.change_weather(month)
-		affected_squares[weather.name] = changed_squares
+		if weather.name in affected_squares:
+			affected_squares[weather.name].append_array(changed_squares)
+		else:
+			affected_squares[weather.name] = changed_squares
 	return affected_squares
