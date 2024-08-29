@@ -26,6 +26,10 @@ var skipping_pieces: Dictionary = {}
 ## Terrains on which you cannot spawn. True for army, false for pawns
 ## TODO: Replace with terrain_weather_rules from BasePiece
 var inaccessible_terrains = {true: [["Water", "None"]], false: []}
+var inaccessible_terrains_new = {"Rook": [["Water", "None"]],
+								 "Bishop": [["Water", "None"]],
+								 "Night": [["Water", "None"], ["Forest","None"]],
+								 "Pawn": []}
 
 ## Creates a new Player with the given color
 func _init(color: String):
@@ -55,6 +59,35 @@ func get_accessible(board: Board, dark: bool):
 					var terrain = board.get_terrain(neighbor)
 					var weather = board.get_weather(neighbor)
 					if [terrain, weather] not in inaccessible_terrains[dark]:
+						## If the square is not added yet, add
+						if neighbor not in accessible:
+							accessible.append(neighbor)
+		return accessible
+		
+func get_accessible_new(board: Board, figure: String):
+	var dark : bool
+	if figure == "Pawn" :
+		dark = false
+	else :
+		dark = true
+		
+	if is_alive():
+		var accessible = []
+		
+		## Setting up square_queue, which contains all pawns and a king
+		var square_queue = [king.coords]
+		for peasant in peasants:
+			square_queue.append(peasant.coords)
+		## When all of the Pawns and King are explored, returns accessible
+		while not square_queue.is_empty():
+			var square = square_queue.pop_front()
+			var neighbors = Board.get_neighbors(square, 1)
+			for neighbor in neighbors:
+				## Accessible square must be the searched color and empty
+				if Board.is_dark(neighbor) == dark and Board.is_empty(neighbor):
+					var terrain = board.get_terrain(neighbor)
+					var weather = board.get_weather(neighbor)
+					if [terrain, weather] not in inaccessible_terrains_new[figure]:
 						## If the square is not added yet, add
 						if neighbor not in accessible:
 							accessible.append(neighbor)
@@ -110,8 +143,8 @@ func remove_if_dead(piece: BasePiece):
 ## that are available to the Player
 func get_possible_pieces(board: Board):
 	var result = []
-	if limit > 0 and not get_accessible(board, true).is_empty():
-		for piece in ["Rook", "Bishop", "Night"]:
+	for piece in ["Rook", "Bishop", "Night"]:
+		if limit > 0 and not get_accessible_new(board, piece).is_empty():
 			if available_pieces[piece] > 0:
 				result.append(piece)
 	if available_pieces["Pawn"] > 0:
