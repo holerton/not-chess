@@ -110,7 +110,7 @@ func flip_buffered_squares():
 ## Then highlights pieces that are available to clone.
 ## Otherwise stops the game and presents final dialog
 func start_turn():
-	$RightRect/PieceSpawner.disable_end_turn_button()
+	$RightRect/PieceSpawner.enable_end_turn_button()
 	$RightRect/PieceSpawner.disable_cancel_selection_button()
 	if players[0].is_alive() and players[1].is_alive():
 		var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)
@@ -160,8 +160,9 @@ func final_selection(new_piece):
 	$RightRect/PieceSpawner.flip_active_squares(pieces, players[0].color)	
 	if new_piece != null:
 		set_current_piece(new_piece)
-		active_chessboard_squares = players[0].get_accessible($ChessboardRect/Chessboard, 
-		true if current_piece.name != "Pawn" else false)
+		active_chessboard_squares = players[0].get_accessible(
+			$ChessboardRect/Chessboard, current_piece
+		)
 		$ChessboardRect/Chessboard.flip_active_squares(active_chessboard_squares)
 	else:
 		$RightRect/PieceSpawner.enable_end_turn_button()
