@@ -87,7 +87,6 @@ func find_reachable(board: Board) -> Array:
 		if square[1] >= speed: 
 			return reachable
 		
-		# square[1] += 1 ## Distance increase
 		var neighbors = board.get_neighbors(square[0], 1)
 		
 		for elem in neighbors: ## Going through neighbors
@@ -215,3 +214,40 @@ func get_inaccessible_squares() -> Array:
 		if weather_rules[rule] == INF:
 			inaccessible.append(rule)
 	return inaccessible
+	
+func find_route(board: Board, to: String):
+	var visited = fill_visited()
+	var square_queue = [[coords, 0]]
+	var squares = []
+	
+	while not square_queue.is_empty():
+		var square = square_queue.pop_front()
+		
+		var neighbors = board.get_neighbors(square[0], 1)
+		if to in neighbors:
+			squares.append([square[0], to])
+			break
+		
+		for elem in neighbors:
+			var xy = board.coords_to_int(elem)
+			
+			if board.is_dark(elem) and not visited[xy[1]][xy[0]]:
+				visited[xy[1]][xy[0]] = true
+				var terrain = board.get_terrain(elem)
+				var weather = board.get_weather(elem)
+				var dist = calc_distance(terrain, weather, square[1])
+				
+				if dist < speed:
+					if board.is_empty(elem) or board.is_ally(color[0], elem):
+						squares.append([square[0], elem])
+						square_queue.append([elem, dist])
+	var next = squares[-1]
+	var route = [to]
+	while next[0] != coords:
+		for square in squares:
+			if square[1] == next[0]:
+				next = square
+				break
+		route.append(next[1])
+	route.reverse()
+	return route
