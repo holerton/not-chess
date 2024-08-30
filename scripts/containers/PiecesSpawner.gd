@@ -14,6 +14,9 @@ var end_turn_button: Button
 ## Button which cancels selection of the BasePiece
 var cancel_selection_button: Button
 
+## Contains squares that are active at the moment
+var active_squares: Array = []
+
 ## Function, that sets up the PieceSpawner.
 func _ready():
 	## Defining custom parameters
@@ -79,7 +82,14 @@ func flip_active_squares(pieces: Array, piece_color: String):
 	var all_pieces = ["Rook", "Bishop", "Night", "Pawn"]
 	for j in len(all_pieces):
 		if all_pieces[j] in pieces:
-			get_node(int_to_coords([j + 1, i])).flip_activity()
+			var square = int_to_coords([j + 1, i])
+			get_node(square).flip_activity()
+			active_squares.append(square)
+
+func clear_active_squares():
+	for square in active_squares:
+		get_node(square).flip_activity()
+	active_squares.clear()
 
 ## Enables cancel_selection_button
 func enable_cancel_selection_button():
