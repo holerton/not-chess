@@ -21,6 +21,8 @@ var attacked_chessboard_squares = []
 func _ready():
 	construct_gui()
 	
+	$RightRect/PieceSpawner.enable_end_turn_button()
+	
 	players = [Player.new("white"), Player.new("black")]
 	var kings = $ChessboardRect/Chessboard.basic_setup()
 	$RightRect/PieceSpawner.basic_setup()
@@ -110,7 +112,6 @@ func flip_buffered_squares():
 ## Then highlights pieces that are available to clone.
 ## Otherwise stops the game and presents final dialog
 func start_turn():
-	$RightRect/PieceSpawner.enable_end_turn_button()
 	$RightRect/PieceSpawner.disable_cancel_selection_button()
 	if players[0].is_alive() and players[1].is_alive():
 		var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)
@@ -118,6 +119,7 @@ func start_turn():
 			$RightRect/PieceSpawner.enable_move_army_button()
 		$RightRect/PieceSpawner.flip_active_squares(pieces, players[0].color)
 	else:
+		$RightRect/PieceSpawner.disable_end_turn_button()
 		$RightRect/PieceSpawner.disable_move_army_button()
 		var message = "The winner is " + players[1].color
 		$AcceptDialog.dialog_text = message
@@ -142,6 +144,7 @@ func move_army(moved_piece):
 ## Called when the turn ends.
 ## Clears everything and calls start_turn
 func end_turn():
+	$RightRect/PieceSpawner.clear_active_squares()
 	swap_players()
 	clear_highlighted_squares()
 	set_current_piece(null)
@@ -157,7 +160,7 @@ func final_selection(new_piece):
 	$RightRect/PieceSpawner.disable_move_army_button()
 	$RightRect/PieceSpawner.enable_cancel_selection_button()
 	var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)
-	$RightRect/PieceSpawner.flip_active_squares(pieces, players[0].color)	
+	$RightRect/PieceSpawner.clear_active_squares()
 	if new_piece != null:
 		set_current_piece(new_piece)
 		active_chessboard_squares = players[0].get_accessible(
@@ -165,7 +168,6 @@ func final_selection(new_piece):
 		)
 		$ChessboardRect/Chessboard.flip_active_squares(active_chessboard_squares)
 	else:
-		$RightRect/PieceSpawner.enable_end_turn_button()
 		army_to_move = players[0].get_army()
 		move_army(null)
 
@@ -194,7 +196,6 @@ func empty_square_selected(pos):
 func piece_added():
 	clear_highlighted_squares()
 	$RightRect/PieceSpawner.disable_cancel_selection_button()
-	$RightRect/PieceSpawner.enable_end_turn_button()
 	players[0].spawn_piece(current_piece)
 	if current_piece.name == "Pawn":
 		players[0].skip_turn()
