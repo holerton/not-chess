@@ -21,8 +21,6 @@ var attacked_chessboard_squares = []
 func _ready():
 	construct_gui()
 	
-	$RightRect/PieceSpawner.enable_end_turn_button()
-	
 	players = [Player.new("white"), Player.new("black")]
 	var kings = $ChessboardRect/Chessboard.basic_setup()
 	$RightRect/PieceSpawner.basic_setup()
@@ -112,6 +110,7 @@ func flip_buffered_squares():
 ## Then highlights pieces that are available to clone.
 ## Otherwise stops the game and presents final dialog
 func start_turn():
+	$RightRect/PieceSpawner.enable_end_turn_button()
 	$RightRect/PieceSpawner.disable_cancel_selection_button()
 	if players[0].is_alive() and players[1].is_alive():
 		var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)

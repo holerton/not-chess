@@ -41,22 +41,24 @@ func _ready():
 	start_turn()
 
 func end_turn():
-	if auto_pieces.is_empty():
-		change_climate()
-	else:
-		var tween = get_tree().create_tween()
-		var moved_pieces = []
-		tween.connect("finished", finish_auto_move.bind(moved_pieces))
-		tween.set_parallel()
-		for piece in auto_pieces:
-			if piece.speed > 0:
-				var pos = piece.move_in_direction($ChessboardRect/Chessboard)
-				if pos != piece.coords:
-					animated_move(piece, pos, tween)
-					$ChessboardRect/Chessboard.traverse(piece, pos)
-					moved_pieces.append(piece)
-			else:
-				piece.skip_turn()
+	$RightRect/PieceSpawner.disable_end_turn_button()
+	var tween = get_tree().create_tween()
+	var moved_pieces = []
+	tween.set_parallel()
+	tween.connect("finished", finish_auto_move.bind(moved_pieces))
+	var someone_moved = false
+	for piece in auto_pieces:
+		if piece.speed > 0:
+			someone_moved = true
+			var pos = piece.move_in_direction($ChessboardRect/Chessboard)
+			if pos != piece.coords:
+				animated_move(piece, pos, tween)
+				$ChessboardRect/Chessboard.traverse(piece, pos)
+				moved_pieces.append(piece)
+		else:
+			piece.skip_turn()
+	if not someone_moved:
+		tween.emit_signal("finished")
 
 func finish_auto_move(moved_pieces: Array):
 	finish_move(moved_pieces)
