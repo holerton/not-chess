@@ -199,3 +199,19 @@ func calc_next_turn_speed(terrain: String, weather: String, dist: int):
 
 func skip_turn():
 	self.speed = min(self.speed + self.max_speed, self.max_speed)
+
+func get_inaccessible_squares() -> Array:
+	var inaccessible: Array = []
+	
+	for rule in terrain_weather_rules:
+		if terrain_weather_rules[rule] == INF:
+			inaccessible.append(rule)
+	
+	for rule in terrain_rules:
+		if terrain_rules[rule] == INF:
+			inaccessible.append(rule)
+	
+	for rule in weather_rules:
+		if weather_rules[rule] == INF:
+			inaccessible.append(rule)
+	return inaccessible
