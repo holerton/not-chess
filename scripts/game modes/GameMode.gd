@@ -131,7 +131,6 @@ func start_turn():
 ## Otherwise highlights all pieces in army_to_move
 func move_army(moved_piece):
 	clear_highlighted_squares()
-	set_current_piece(null)
 	army_to_move.erase(moved_piece)
 	if army_to_move.is_empty():
 		end_turn()
@@ -144,6 +143,8 @@ func move_army(moved_piece):
 ## Clears everything and calls start_turn
 func end_turn():
 	$RightRect/PieceSpawner.clear_active_squares()
+	if current_piece == null:
+		players[0].skip_turn()
 	swap_players()
 	clear_highlighted_squares()
 	set_current_piece(null)
@@ -209,13 +210,13 @@ func piece_added():
 func piece_moved():
 	$RightRect/PieceSpawner.disable_cancel_selection_button()
 	clear_highlighted_squares()
-	attacked_chessboard_squares = current_piece.find_attackable($ChessboardRect/Chessboard)
-	if len(attacked_chessboard_squares) == 0:
-		move_army(current_piece)
-	else:
-		active_chessboard_squares = [current_piece.coords]
-		flip_buffered_squares()
-
+	if current_piece.speed > 0:
+		attacked_chessboard_squares = current_piece.find_attackable($ChessboardRect/Chessboard)
+		if len(attacked_chessboard_squares) > 0:
+			active_chessboard_squares = [current_piece.coords]
+			flip_buffered_squares()
+			return
+	move_army(current_piece)
 
 ## If selected_piece is a King it means, that current player captured the enemy king
 ## Replaces enemy king with null and calls end_turn()
@@ -268,7 +269,6 @@ func piece_attacked(other_piece):
 		# $ChessboardRect/Chessboard.clear_square(current_piece)
 		animated_death(current_piece)
 		army_to_move.erase(current_piece)
-		set_current_piece(null)
 	if special_action:
 		var selected_squares = current_piece.special_selection($ChessboardRect/Chessboard, other_piece)
 		attacked_chessboard_squares = selected_squares[1]
