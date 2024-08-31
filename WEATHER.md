@@ -10,9 +10,12 @@ Weather in the terms of the game appears as a variable Terrain type, but it does
 ## Map-wide-random Weather
 
 Map-wide-random means for each Month there are presets for this type of Weather (probability of appearing on each block of the map).
-Ler's consider an example.
+
 ### Types
-- **Snow over Mountains**
+- **Snow over the Mountain**
+
+Effect=Mountain+Snow
+
 Before the game start, and after Terrain generation, for each Mountain there is 85% probability (it is called Initial Probability) that there will be snow on top of it. Then, each Month including the first one, we check each Mountain: does Snow appears or disappears on top of it (as for now, there are no plans of doing more than one layer of Snow). 
 Order:
 	1. Check existance;
@@ -40,7 +43,11 @@ Order:
 |Aut4mn|85|4
 
 - **Ice**
+
+Effect=Snow
+
 Appears over the Water. Works the same as a Snow over Mountain except the probabilities table.
+
 *Initial Probability: 50%.*
 
 > **Note: probability of appearance is eight times less if corresponding Water block is on the edge of the map.**
@@ -64,5 +71,80 @@ Appears over the Water. Works the same as a Snow over Mountain except the probab
 |Aut3mn|24|30
 |Aut4mn|50|15
 
+
+- **Snow over the Forest/Swamp**
+
+Effect=Forest+Snow (Swamp+Snow)
+
+*Initial Probability: 70%.*
+
+| Month |  Probability of appearance | Probabilty of disapperance| 
+ |---------|--------------------------|---------------|
+|W1nter|80|2
+|W2nter|93|0
+|W3nter|98|0
+|W4nter|98|0
+|Spr1ng|50|3
+|Spr2ng|32|3
+|Spr3ng|7|7
+|Spr4ng|2|25
+|Summe1|1|96
+|Summe2|0|99
+|Summe3|0|99
+|Summe4|0|99
+|Aut1mn|3|70
+|Aut2mn|14|30
+|Aut3mn|46|20
+|Aut4mn|70|2
+
+- **Snow over the Plain**
+
+Effect=Snow
+
+*Initial Probability: 70%.*
+
+| Month |  Probability of appearance | Probabilty of disapperance| 
+ |---------|--------------------------|---------------|
+|W1nter|80|3
+|W2nter|93|0
+|W3nter|98|0
+|W4nter|98|0
+|Spr1ng|50|8
+|Spr2ng|32|17
+|Spr3ng|7|50
+|Spr4ng|2|80
+|Summe1|1|99
+|Summe2|0|99
+|Summe3|0|99
+|Summe4|0|99
+|Aut1mn|3|75
+|Aut2mn|14|40
+|Aut3mn|46|25
+|Aut4mn|70|12
+
+- **Snow over the Desert**
+
+Effect=Desert+Snow
+
+*Initial Probability: 2%.*
+
+| Month |  Probability of appearance | Probabilty of disapperance| 
+ |---------|--------------------------|---------------|
+|W1nter|5|5
+|W2nter|6|0
+|W3nter|6|0
+|W4nter|6|0
+|Spr1ng|2|8
+|Spr2ng|0|17
+|Spr3ng|0|50
+|Spr4ng|0|80
+|Summe1|0|99
+|Summe2|0|99
+|Summe3|0|99
+|Summe4|0|99
+|Aut1mn|0|75
+|Aut2mn|0|40
+|Aut3mn|0|25
+|Aut4mn|2|12
 
 ## Moving Weather (planned)
