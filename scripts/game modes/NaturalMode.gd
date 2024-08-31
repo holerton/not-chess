@@ -68,19 +68,18 @@ func change_climate():
 	season_counter = (season_counter + 1) % 32
 	if season_counter % 2 == 0:
 		self.seasons.change_month()
-		var cleared_squares = $ChessboardRect/Chessboard.flip_weather(
-			self.climate.calc_climate(season_counter / 2)
-		)
-		for square in cleared_squares:
-			var piece = $ChessboardRect/Chessboard.get_piece(square)
-			if piece.name != "Pawn" and piece.name != "King":
-				piece.get_damage(piece.health)
-				animated_death(piece)
-				if players[0].has_piece(piece):
-					players[0].remove_if_dead(piece)
-				elif players[1].has_piece(piece):
-					players[1].remove_if_dead(piece)
-				else:
-					auto_pieces.erase(piece)
+	var cleared_squares = $ChessboardRect/Chessboard.flip_weather(
+		self.climate.calc_climate(season_counter / 2)
+	)
+	for square in cleared_squares:
+		var piece = $ChessboardRect/Chessboard.get_piece(square)
+		if piece.name != "Pawn" and piece.name != "King":
+			piece.get_damage(piece.health)
+			animated_death(piece)
+			if players[0].has_piece(piece):
+				players[0].remove_if_dead(piece)
+			elif players[1].has_piece(piece):
+				players[1].remove_if_dead(piece)
+			else:
+				auto_pieces.erase(piece)
 	super.end_turn()
-	
