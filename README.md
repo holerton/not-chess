@@ -55,7 +55,7 @@ Terrain and weather both influence figures' movement, but terrain is static and 
  - ### Weather types
  1. Flood: same as swamp;
 2. Snow: all figures except archers have -1 movement (and so they can be forced to skip their turn) (archers are light)
- 3. Rain: archers have 0.3 chance to miss;
+ 3. Rain: Archers have 0.3 chance to miss if they are on the square with Rain or they shoot over the square with Rain; they have 0.4 chance to miss if both conditions are met.
 4. Wind: riders have +1 movement if they ride all way straight with the direction of the wind; archers have 0.1 chance to miss independently of wind direction;
   <p align="center">
   <img src="https://raw.githubusercontent.com/holerton/not-chess/master/readme_images/board_horse_mov.bmp" />
