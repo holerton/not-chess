@@ -181,8 +181,10 @@ func empty_square_selected(pos):
 	if players[0].has_piece(current_piece):
 		var tween = create_tween()
 		tween.connect("finished", finish_move.bind([current_piece]))
+		var route = current_piece.find_route($ChessboardRect/Chessboard, pos)
 		$ChessboardRect/Chessboard.traverse(current_piece, pos)
-		animated_move(current_piece, pos, tween)
+		for square in route:
+			animated_move(current_piece, square, tween)
 		
 		piece_moved()
 	else:
@@ -263,12 +265,9 @@ func piece_attacked(other_piece):
 	clear_highlighted_squares()
 	var special_action = current_piece.attack(other_piece)
 	if players[1].remove_if_dead(other_piece):
-		# $ChessboardRect/Chessboard.clear_square(other_piece)
 		animated_death(other_piece)
 	if players[0].remove_if_dead(current_piece):
-		# $ChessboardRect/Chessboard.clear_square(current_piece)
 		animated_death(current_piece)
-		army_to_move.erase(current_piece)
 	if special_action:
 		var selected_squares = current_piece.special_selection($ChessboardRect/Chessboard, other_piece)
 		attacked_chessboard_squares = selected_squares[1]
