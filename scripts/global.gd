@@ -30,14 +30,11 @@ func _ready():
 
 func set_textures():
 	var terrains = ["Plain", "Forest", "Water", "Desert", "Marsh", "Mountain"]
-	
 	for terrain in terrains:
 		TERRAIN_TEXTURES[terrain] = {}
 		TERRAIN_TEXTURES[terrain]["None"] = load("res://images/terrains/%s.png" 
 		% terrain)
-	
-	TERRAIN_TEXTURES["Mountain"]["Snow"] = create_gradient(Color.DARK_GRAY)
-	TERRAIN_TEXTURES["Water"]["Snow"] = create_gradient(Color.LIGHT_BLUE)
+		TERRAIN_TEXTURES[terrain]["Snow"] = create_gradient(TERRAIN_COLORS[terrain])
 	
 	TERRAIN_TEXTURES["Black"] = {} 
 	TERRAIN_TEXTURES["Black"]["None"] = create_gradient(Color.DARK_SLATE_GRAY)
