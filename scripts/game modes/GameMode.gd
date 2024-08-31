@@ -10,20 +10,19 @@ var players: Array
 ## Stores current unmoved army pieces
 var army_to_move = []
 
-## Stores current active chessboard squares
-var active_chessboard_squares = []
+var board: Board
 
-## Stores current attacked chessboard squares
-var attacked_chessboard_squares = []
+var spawner: PieceSpawner
 
 ## Prepares the game: creates two players and sets up Board and PieceSpawner
 ## After that calls method start_turn to begin the game
 func _ready():
 	construct_gui()
-	
+	self.board = $ChessboardRect/Chessboard
+	self.spawner = $RightRect/PieceSpawner
 	players = [Player.new("white"), Player.new("black")]
-	var kings = $ChessboardRect/Chessboard.basic_setup()
-	$RightRect/PieceSpawner.basic_setup()
+	var kings = board.basic_setup()
+	spawner.basic_setup()
 	players[0].update_limits()
 	players[1].update_limits()
 	
@@ -94,32 +93,21 @@ func set_current_piece(piece: BasePiece):
 func swap_players():
 	self.players = [players[1], players[0]]
 
-## Sets all highlighted squares to usual state
-func clear_highlighted_squares():
-	flip_buffered_squares()
-	self.active_chessboard_squares.clear()
-	self.attacked_chessboard_squares.clear()
-
-## Changes is_active of active_chessboard_squares 
-## and is_attacked of attacked_chessboard_squares to opposite
-func flip_buffered_squares():
-	$ChessboardRect/Chessboard.flip_active_squares(active_chessboard_squares)
-	$ChessboardRect/Chessboard.flip_attacked_squares(attacked_chessboard_squares)
-
 ## If both players are alive, swaps them.
 ## Then highlights pieces that are available to clone.
 ## Otherwise stops the game and presents final dialog
 func start_turn():
-	$RightRect/PieceSpawner.enable_end_turn_button()
-	$RightRect/PieceSpawner.disable_cancel_selection_button()
+	spawner.enable_end_turn_button()
+	spawner.disable_cancel_selection_button()
 	if players[0].is_alive() and players[1].is_alive():
-		var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)
+		var pieces = players[0].get_possible_pieces(board)
 		if players[0].has_army():
-			$RightRect/PieceSpawner.enable_move_army_button()
-		$RightRect/PieceSpawner.flip_active_squares(pieces, players[0].color)
+			spawner.enable_move_army_button()
+		spawner.set_active_squares_from_pieces(pieces, players[0].color)
+		spawner.flip_highlighted()
 	else:
-		$RightRect/PieceSpawner.disable_end_turn_button()
-		$RightRect/PieceSpawner.disable_move_army_button()
+		spawner.disable_end_turn_button()
+		spawner.disable_move_army_button()
 		var message = "The winner is " + players[1].color
 		$AcceptDialog.dialog_text = message
 		$AcceptDialog.show()
@@ -130,23 +118,25 @@ func start_turn():
 ## Calls end_turn()
 ## Otherwise highlights all pieces in army_to_move
 func move_army(moved_piece):
-	clear_highlighted_squares()
+	board.clear_highlighted()
 	army_to_move.erase(moved_piece)
 	if army_to_move.is_empty():
 		end_turn()
 	else:
+		var active_chessboard_squares = []
 		for piece in army_to_move:
 			active_chessboard_squares.append(piece.coords)
-		flip_buffered_squares()
+		board.set_active_squares(active_chessboard_squares)
+		board.flip_highlighted()
 
 ## Called when the turn ends.
 ## Clears everything and calls start_turn
 func end_turn():
-	$RightRect/PieceSpawner.clear_active_squares()
+	spawner.clear_highlighted()
+	board.clear_highlighted()
 	if current_piece == null:
 		players[0].skip_turn()
 	swap_players()
-	clear_highlighted_squares()
 	set_current_piece(null)
 	army_to_move.clear()
 	start_turn()
@@ -157,16 +147,14 @@ func end_turn():
 ## Otherwise means that player wants to move army
 ## Fills army_to_move and calls move_army(null) 
 func final_selection(new_piece):
-	$RightRect/PieceSpawner.disable_move_army_button()
-	$RightRect/PieceSpawner.enable_cancel_selection_button()
-	var pieces = players[0].get_possible_pieces($ChessboardRect/Chessboard)
-	$RightRect/PieceSpawner.clear_active_squares()
+	spawner.disable_move_army_button()
+	spawner.enable_cancel_selection_button()
+	var pieces = players[0].get_possible_pieces(board)
+	spawner.clear_highlighted()
 	if new_piece != null:
 		set_current_piece(new_piece)
-		active_chessboard_squares = players[0].get_accessible(
-			$ChessboardRect/Chessboard, current_piece
-		)
-		$ChessboardRect/Chessboard.flip_active_squares(active_chessboard_squares)
+		board.set_active_squares(players[0].get_accessible(board, current_piece))
+		board.flip_highlighted()
 	else:
 		army_to_move = players[0].get_army()
 		move_army(null)
@@ -181,23 +169,23 @@ func empty_square_selected(pos):
 	if players[0].has_piece(current_piece):
 		var tween = create_tween()
 		tween.connect("finished", finish_move.bind([current_piece]))
-		var route = current_piece.find_route($ChessboardRect/Chessboard, pos)
-		$ChessboardRect/Chessboard.traverse(current_piece, pos)
+		var route = current_piece.find_route(board, pos)
+		board.traverse(current_piece, pos)
 		for square in route:
 			animated_move(current_piece, square, tween)
 		
 		piece_moved()
 	else:
 		current_piece.set_coords(pos)
-		$ChessboardRect/Chessboard.set_piece(current_piece)
+		board.set_piece(current_piece)
 		piece_added()
 
 ## Called when new piece is cloned to an empty square
 ## If new piece is a Pawn, calls end_turn
 ## Otherwise forms army_to_move and calls move_army(current_piece)
 func piece_added():
-	clear_highlighted_squares()
-	$RightRect/PieceSpawner.disable_cancel_selection_button()
+	board.clear_highlighted()
+	spawner.disable_cancel_selection_button()
 	players[0].spawn_piece(current_piece)
 	if current_piece.name == "Pawn":
 		players[0].skip_turn()
@@ -210,13 +198,14 @@ func piece_added():
 ## If piece has any attackable squares, function highlights them and its position
 ## Otherwise calls move_army(current_piece)
 func piece_moved():
-	$RightRect/PieceSpawner.disable_cancel_selection_button()
-	clear_highlighted_squares()
+	spawner.disable_cancel_selection_button()
+	board.clear_highlighted()
 	if current_piece.speed > 0:
-		attacked_chessboard_squares = current_piece.find_attackable($ChessboardRect/Chessboard)
+		var attacked_chessboard_squares = current_piece.find_attackable(board)
 		if len(attacked_chessboard_squares) > 0:
-			active_chessboard_squares = [current_piece.coords]
-			flip_buffered_squares()
+			board.set_active_squares([current_piece.coords])
+			board.set_attacked_squares(attacked_chessboard_squares)
+			board.flip_highlighted()
 			return
 	move_army(current_piece)
 
@@ -234,18 +223,18 @@ func existing_piece_selected(selected_piece):
 	if selected_piece.name == "King":
 		selected_piece.get_damage(1)
 		players[1].remove_if_dead(selected_piece)
-		$ChessboardRect/Chessboard.replace(current_piece, selected_piece)
+		board.replace(current_piece, selected_piece)
 		end_turn()
 		return
 	
-	clear_highlighted_squares()
+	board.clear_highlighted()
 	
 	if current_piece != selected_piece:
 		set_current_piece(selected_piece)
-		active_chessboard_squares = current_piece.find_reachable($ChessboardRect/Chessboard)
-		attacked_chessboard_squares = current_piece.find_attackable($ChessboardRect/Chessboard)
-		flip_buffered_squares()
-		$RightRect/PieceSpawner.enable_cancel_selection_button()
+		board.set_active_squares(current_piece.find_reachable(board))
+		board.set_attacked_squares(current_piece.find_attackable(board))
+		board.flip_highlighted()
+		spawner.enable_cancel_selection_button()
 	
 	else:
 		move_army(current_piece)
@@ -262,21 +251,22 @@ func existing_piece_selected(selected_piece):
 ## function highlights special squares for that action
 ## Otherwise calls move_army 
 func piece_attacked(other_piece):
-	clear_highlighted_squares()
+	board.clear_highlighted()
 	var special_action = current_piece.attack(other_piece)
 	if players[1].remove_if_dead(other_piece):
 		animated_death(other_piece)
 	if players[0].remove_if_dead(current_piece):
 		animated_death(current_piece)
 	if special_action:
-		var selected_squares = current_piece.special_selection($ChessboardRect/Chessboard, other_piece)
-		attacked_chessboard_squares = selected_squares[1]
+		var selected_squares = current_piece.special_selection(board, other_piece)
+		var attacked_chessboard_squares = selected_squares[1]
 		
 		if attacked_chessboard_squares.is_empty():
 			move_army(current_piece)
 		else:
-			active_chessboard_squares = selected_squares[0]
-			flip_buffered_squares()
+			board.set_active_squares(selected_squares[0])
+			board.set_attacked_squares(selected_squares[1])			
+			board.flip_highlighted()
 	else:
 		move_army(current_piece)
 
@@ -289,11 +279,11 @@ func piece_attacked(other_piece):
 ## Otherwise player wants to cancel selection of a piece to clone.
 ## Clears highlighted squares, calls start_turn to repeat selection 
 func _on_cancel_selection():
-	$RightRect/PieceSpawner.disable_cancel_selection_button()
+	spawner.disable_cancel_selection_button()
 	if players[0].has_piece(current_piece):
 		move_army(null)
 	else:
-		clear_highlighted_squares()
+		board.clear_highlighted()
 		set_current_piece(null)
 		start_turn()
 
@@ -306,12 +296,12 @@ func animated_move(piece: BasePiece, to: String, tween: Tween):
 
 func finish_move(moved_pieces: Array):
 	for piece in moved_pieces:
-		$ChessboardRect/Chessboard.remove_child(piece)
+		board.remove_child(piece)
 		piece.set_position(Vector2(Global.tile_size / 2, Global.tile_size / 2))
-		$ChessboardRect/Chessboard.get_node(piece.coords).add_child(piece)
+		board.get_node(piece.coords).add_child(piece)
 
 func animated_death(piece: BasePiece):
 	var tween = create_tween()
-	tween.connect("finished", $ChessboardRect/Chessboard.clear_square.bind(piece))
+	tween.connect("finished", board.clear_square.bind(piece))
 	tween.tween_property(piece, "modulate", Color.RED, 0.15)
 	tween.tween_property(piece, "scale", Vector2(), 0.15)
