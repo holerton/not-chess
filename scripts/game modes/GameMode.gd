@@ -223,7 +223,14 @@ func existing_piece_selected(selected_piece):
 	if selected_piece.name == "King":
 		selected_piece.get_damage(1)
 		players[1].remove_if_dead(selected_piece)
-		board.replace(current_piece, selected_piece)
+		board.clear_square(selected_piece)
+		
+		var tween = create_tween()
+		tween.connect("finished", finish_move.bind([current_piece]))
+		var route = current_piece.find_route(board, selected_piece.coords)
+		board.traverse(current_piece, selected_piece.coords)
+		for square in route:
+			animated_move(current_piece, square, tween)
 		end_turn()
 		return
 	
@@ -265,7 +272,7 @@ func piece_attacked(other_piece):
 			move_army(current_piece)
 		else:
 			board.set_active_squares(selected_squares[0])
-			board.set_attacked_squares(selected_squares[1])			
+			board.set_attacked_squares(selected_squares[1])
 			board.flip_highlighted()
 	else:
 		move_army(current_piece)
