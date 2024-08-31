@@ -161,7 +161,7 @@ Location of the Weather Unit depends on its location in the previous Month.
 
 *Note: Rains=Rain Weather Units, Waters=Water Weather Units etc.*
 
-_Effect_: Archers have 0.3 chance to miss. And it's beautiful. And maybe more.
+_Effect_: Archers have 0.3 chance to miss if they are on the square with Rain or they shoot over the square with Rain; they have 0.4 chance to miss if both conditions are met.
 
 Rain generation algorithm for each month depends on two numbers: *A* - number of Rains to appear and *D* - number of Rains to disappear.  
 Steps:  
