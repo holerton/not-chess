@@ -195,18 +195,6 @@ func traverse(piece: BasePiece, to: String):
 			add_to_the_map(to, piece.shortname)
 			piece.move(to, self)
 
-## Active and Attacked Squares
-
-## Changes is_active of given coordinates to opposite
-func flip_active_squares(pos_array: Array):
-	for pos in pos_array:
-		get_node(pos).flip_activity()
-
-## Changes is_attacked of given coordinates to opposite
-func flip_attacked_squares(pos_array: Array):
-	for pos in pos_array:
-		get_node(pos).flip_attacked()
-
 func flip_weather(weather_dict: Dictionary):
 	var cleared_squares = []
 	for weather in weather_dict:

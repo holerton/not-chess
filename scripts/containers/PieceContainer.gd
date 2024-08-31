@@ -15,6 +15,12 @@ var square_x_size: int = 0
 ## Defines the y component of the size of the square
 var square_y_size: int = 0
 
+## Stores current active chessboard squares
+var active_squares: Array = []
+
+## Stores current attacked chessboard squares
+var attacked_squares: Array = []
+
 ## Creates an empty container with set parameters. If width or height are negative, returns. 
 func _ready() -> void:
 	
@@ -60,3 +66,20 @@ func add_piece(piece: String, color: String, pos: String) -> BasePiece:
 			new_piece = Bishop.new(color, pos)
 	get_node(pos).add_child(new_piece)
 	return new_piece
+
+func flip_highlighted():
+	for square in self.active_squares:
+		get_node(square).flip_activity()
+	for square in self.attacked_squares:
+		get_node(square).flip_attacked()
+
+func clear_highlighted():
+	flip_highlighted()
+	self.active_squares.clear()
+	self.attacked_squares.clear()
+	
+func set_active_squares(active_squares: Array):
+	self.active_squares = active_squares
+
+func set_attacked_squares(attacked_squares: Array):
+	self.attacked_squares = attacked_squares
