@@ -5,7 +5,7 @@ Each turn for one player, or each two turns game-wide, is called Month. There ar
 
 # About Weather
 
-Weather in the terms of the game appears as a variable Terrain type, but it does not necessarily override Terrain properties. Weather Unit (WU) is one specific block of Weather. There are two types of Weather: moving (location of Weather Unit is dependent from location of this particular WU on the previous Month) and map-wide-random. We will start from the second type.
+Weather in the terms of the game appears as a variable Terrain type, but it does not necessarily override Terrain properties. **Weather changes each player's turn, and Weather parameters change each Month**. Weather Unit (WU) is one specific block of Weather. There are two types of Weather: moving (location of Weather Unit is dependent from location of this particular WU on the previous Month) and map-wide-random. We will start from the second type.
 
 ## Map-wide-random Weather
 
@@ -14,14 +14,15 @@ Map-wide-random means for each Month there are presets for this type of Weather 
 ### Types
 - **Snow over the Mountain**
 
-Effect=Mountain+Snow
+*Effect*=Mountain+Snow  
 
-Before the game start, and after Terrain generation, for each Mountain there is 85% probability (it is called Initial Probability) that there will be snow on top of it. Then, each Month including the first one, we check each Mountain: does Snow appears or disappears on top of it (as for now, there are no plans of doing more than one layer of Snow). 
-Order:
-	1. Check existance;
-	2. If exists, check probabilty of disappearance;
-	3. Then check probabilty of appearance for block from point (2.)
-	4. Then check probability of appearance for other blocks.
+Before the game start, and after Terrain generation, for each Mountain there is 85% probability (it is called Initial Probability) that there will be snow on top of it. Then, **before each player's turn**, we check each Mountain: does Snow appears or disappears on top of it (as for now, there are no plans of doing more than one layer of Snow).  
+
+Order:  
+	1. Check existance;  
+	2. If exists, check probabilty of disappearance;  
+	3. Then check probabilty of appearance for block from point (2.)  
+	4. Then check probability of appearance for other blocks.  
 
  | Month |  Probability of appearance | Probabilty of disapperance| 
  |---------|--------------------------|---------------|
@@ -42,12 +43,13 @@ Order:
 |Aut3mn|65|5
 |Aut4mn|85|4
 
+$~$
+
 - **Ice**
 
-Effect=Snow
 
-Appears over the Water. Works the same as a Snow over Mountain except the probabilities table.
-
+*Effect*=Snow  
+Appears over the Water. Works the same as a Snow over Mountain except the probabilities table.  
 *Initial Probability: 50%.*
 
 > **Note: probability of appearance is eight times less if corresponding Water block is on the edge of the map.**
@@ -71,11 +73,11 @@ Appears over the Water. Works the same as a Snow over Mountain except the probab
 |Aut3mn|24|30
 |Aut4mn|50|15
 
+$~$
 
 - **Snow over the Forest/Swamp**
 
-Effect=Forest+Snow (Swamp+Snow)
-
+*Effect*=Forest+Snow (Swamp+Snow)  
 *Initial Probability: 70%.*
 
 | Month |  Probability of appearance | Probabilty of disapperance| 
@@ -97,10 +99,11 @@ Effect=Forest+Snow (Swamp+Snow)
 |Aut3mn|46|20
 |Aut4mn|70|2
 
+$~$
+
 - **Snow over the Plain**
 
-Effect=Snow
-
+*Effect*=Snow  
 *Initial Probability: 70%.*
 
 | Month |  Probability of appearance | Probabilty of disapperance| 
@@ -122,10 +125,11 @@ Effect=Snow
 |Aut3mn|46|25
 |Aut4mn|70|12
 
+$~$
+
 - **Snow over the Desert**
 
-Effect=Desert+Snow
-
+*Effect*= Desert + Snow  
 *Initial Probability: 2%.*
 
 | Month |  Probability of appearance | Probabilty of disapperance| 
@@ -147,4 +151,74 @@ Effect=Desert+Snow
 |Aut3mn|0|25
 |Aut4mn|2|12
 
-## Moving Weather (planned)
+## Moving Weather
+
+Location of the Weather Unit depends on its location in the previous Month.
+
+### Types
+
+- **Rain**
+
+*Note: Rains=Rain Weather Units, Waters=Water Weather Units etc.*
+
+_Effect_: Archers have 0.3 chance to miss. And it's beautiful. And maybe more.
+
+Rain generation algorithm for each month depends on two numbers: *A* - number of Rains to appear and *D* - number of Rains to disappear.  
+Steps:  
+1. Randomly choose *D* Rains; they disappear;
+2. Move remaining Rains: if there is no Wind on start square, Rain moves to the one of the eight closest squares (randomly chosen), but it can not move to the square with the Wind direction exactly opposite to expected Rain movement direction. If there is Wind on the square, then Rain moves in the direction of Wind.
+*Note: Rain can move on any square (black/white).*
+3. After second step, if there is a square with two Rains, Thunderstorm is formed on that square;
+4. New Rains appear:  
+4.1. Try to place *A* Rains on random Mountains;  
+4.2. If *R* Rains remain unplaced, try to place *R* Rains on random Waters;  
+4.3. If *U* Rains remain unplaced, try to place *U* Rains on random Plains.
+
+Rain *A*/*D* table, example from README.md (10x10 board):
+
+| Month |  *A* | *D*| 
+ |---------|--------------------------|---------------|
+|W1nter|0|0
+|W2nter|0|0
+|W3nter|0|0
+|W4nter|0|0
+|Spr1ng|1|0
+|Spr2ng|1|1
+|Spr3ng|2|1
+|Spr4ng|10|2
+|Summe1|4|9
+|Summe2|1|5
+|Summe3|4|0
+|Summe4|2|4
+|Aut1mn|4|2
+|Aut2mn|15|0
+|Aut3mn|4|19
+|Aut4mn|0|4
+
+
+Rain *A*/*D* table, where *S* is a board size; *integer division everywhere*:
+
+| Month |  *A* | *D*| 
+ |---------|--------------------------|---------------|
+|W1nter|0|0
+|W2nter|0|0
+|W3nter|0|0
+|W4nter|0|0
+|Spr1ng|$max \left( \frac {S} {33}-2; 1 \right) $ |0
+|Spr2ng|$max \left( \frac {S} {29}-2; 1 \right) $|$max \left( \frac {S} {33}-2; 1 \right) $
+|Spr3ng|$max \left( \frac {S} {22}-2; 1 \right) $|$max \left( \frac {S} {29}-2; 1 \right) $
+|Spr4ng|$\frac {S} {10} $|$max \left( \frac {S} {22}-2; 1 \right) $
+|Summe1|$\frac {S} {22} $| $\frac {S} {10}-1 $
+|Summe2|$max \left( \frac {S} {33}-2; 1 \right) $|$\frac {S} {22}+1 $
+|Summe3|$\frac {S} {18}-1$|0
+|Summe4|$max \left( \frac {S} {22}-2; 1 \right) $|$\frac {S} {18}-1$
+|Aut1mn|$\frac {S} {17}-1$|$max \left( \frac {S} {22}-2; 1 \right) $
+|Aut2mn|$\frac {S} {7} +1$|0
+|Aut3mn|$\frac {S} {17}-1$|$\frac {S} {7} +\frac {S} {17}$
+|Aut4mn|0|$\frac {S} {17}-1$
+
+$~$
+
+- **Thunderstorm**
+
+Special Weather type. Appears only if two Rains merge. No one can step/place on the square with Thunderstorm. **TBD**
