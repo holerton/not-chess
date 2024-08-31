@@ -51,13 +51,9 @@ func get_container_name() -> String:
 
 func flip_activity() -> void:
 	state = Global.ACTIVE if state == Global.PASSIVE else Global.PASSIVE
-	#$Selection.color = Color(Color.DARK_ORCHID, 0.7) 
-	#$Selection.visible = not $Selection.visible
 
 func flip_attacked() -> void:
 	state = Global.ATTACKED if state == Global.PASSIVE else Global.PASSIVE
-	#$Selection.color = Color(Color.CRIMSON, 0.7) 
-	#$Selection.visible = not $Selection.visible
 
 func flip_weather(weather: String) -> void:
 	self.weather = "None" if self.weather == weather else weather 
