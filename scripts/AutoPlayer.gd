@@ -6,4 +6,4 @@ func _init(color: String):
 	super(color)
 
 func autoplayer_turn():
-	var lol=0
+	var lol=2
