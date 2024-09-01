@@ -14,13 +14,19 @@ var board: Board
 
 var spawner: PieceSpawner
 
+var autoplayer_color: String
+
 ## Prepares the game: creates two players and sets up Board and PieceSpawner
 ## After that calls method start_turn to begin the game
 func _ready():
 	construct_gui()
 	self.board = $ChessboardRect/Chessboard
 	self.spawner = $RightRect/PieceSpawner
-	players = [Player.new("white"), Player.new("black")]
+	self.autoplayer_color = "black"#!!!
+	if autoplayer_color == "black":
+		players = [Player.new("white"), AutoPlayer.new("black")]
+	else:
+		players = [AutoPlayer.new("white"), Player.new("black")]
 	var kings = board.basic_setup()
 	spawner.basic_setup()
 	players[0].update_limits()
@@ -100,6 +106,7 @@ func start_turn():
 	spawner.enable_end_turn_button()
 	spawner.disable_cancel_selection_button()
 	if players[0].is_alive() and players[1].is_alive():
+		autoplayer()
 		var pieces = players[0].get_possible_pieces(board)
 		if players[0].has_army():
 			spawner.enable_move_army_button()
@@ -312,3 +319,8 @@ func animated_death(piece: BasePiece):
 	tween.connect("finished", board.clear_square.bind(piece))
 	tween.tween_property(piece, "modulate", Color.RED, 0.15)
 	tween.tween_property(piece, "scale", Vector2(), 0.15)
+
+func autoplayer():
+	if players[0].color == autoplayer_color:
+		players[0].autoplayer_turn()
+		end_turn()
