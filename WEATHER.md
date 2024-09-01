@@ -209,7 +209,7 @@ Rain *A*/*D* table, where *S* is a board size; *integer division everywhere*:
 |Spr3ng|$max \left( \frac {S} {22}-2; 1 \right) $|$max \left( \frac {S} {29}-2; 1 \right) $
 |Spr4ng|$\frac {S} {10} $|$max \left( \frac {S} {22}-2; 1 \right) $
 |Summe1|$\frac {S} {22} $| $\frac {S} {10}-1 $
-|Summe2|$max \left( \frac {S} {33}-2; 1 \right) $|$\frac {S} {22}+1 $
+|Summe2|0|$\frac {S} {22}+1 $
 |Summe3|$\frac {S} {18}-1$|0
 |Summe4|$max \left( \frac {S} {22}-2; 1 \right) $|$\frac {S} {18}-1$
 |Aut1mn|$\frac {S} {17}-1$|$max \left( \frac {S} {22}-2; 1 \right) $
