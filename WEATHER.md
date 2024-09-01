@@ -217,7 +217,7 @@ Rain *A*/*D* table, where *S* is a board size; *integer division everywhere*:
 |Aut3mn|$\frac {S} {17}-1$|$\frac {S} {7} +\frac {S} {17}$
 |Aut4mn|0|$\frac {S} {17}-1$
 
-> As you may notice, $\Sigma \\{ A \\} = \Sigma \\{ D \\} $, so there is no Rain in Winter Months when there is Snow instead. Snow is both a Winter precipitation and its result, and Rain is a precipitation only with Flood coming as a result of heavy rains. If Rain moves to the square with Snow, Snow disappears except the situation when this square is Mountain. Then, if there is a Rain and Snow on the same Mountain, effect is a sum of effects: so, Archer doesn't skip his turn but have 0.3-0.4 chance to miss. In the matter of animation and logic Snow may appear as light snowfall and Snow with Rain may appear as heavy.
+> As you may notice, $\Sigma \\{ A \\} = \Sigma \\{ D \\} $, so there is no Rain in Winter Months when there is Snow instead. Snow is both a Winter precipitation and its result, and Rain is a precipitation only with Flood coming as a result of heavy rains. If Rain moves to the square with Snow, Snow disappears except the situation when this square is Mountain. Then, if there is a Rain and Snow on the same Mountain, effect is a sum of effects: so, Archer skips just one turn but have 0.3-0.4 chance to miss. In the matter of animation and logic Snow may appear as light snowfall and Snow with Rain may appear as heavy.
 
 $~$
 
