@@ -4,8 +4,7 @@ class_name Climate
 var weathers: Array = []
 
 func _init(terrain_map: Dictionary):
-	self.weathers.append(Ice.new({"Water": terrain_map["Water"]}))
-	self.weathers.append(Snow.new({"Mountain": terrain_map["Mountain"]}))
+	self.weathers.append(Snow.new(terrain_map))
 
 func initial_climate():
 	var affected_squares: Dictionary = {}
