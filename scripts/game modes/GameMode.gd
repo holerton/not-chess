@@ -235,7 +235,6 @@ func existing_piece_selected(selected_piece):
 		return
 	
 	board.clear_highlighted()
-	
 	if current_piece != selected_piece:
 		set_current_piece(selected_piece)
 		board.set_active_squares(current_piece.find_reachable(board))
@@ -291,8 +290,8 @@ func _on_cancel_selection():
 		move_army(null)
 	else:
 		board.clear_highlighted()
-		set_current_piece(null)
 		start_turn()
+	set_current_piece(null)
 
 func animated_move(piece: BasePiece, to: String, tween: Tween):
 	var xy_to = Board.coords_to_int(to)
