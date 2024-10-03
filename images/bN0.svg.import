@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr7xcnkfmhe07"
-path="res://.godot/imported/BRook.svg-3afd50545b2c875882710bd87cc13790.ctex"
+uid="uid://tjsgf8j5yx2d"
+path="res://.godot/imported/bN0.svg-af2a8c654a585a812d6978091d9cdef9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/BRook.svg"
-dest_files=["res://.godot/imported/BRook.svg-3afd50545b2c875882710bd87cc13790.ctex"]
+source_file="res://images/bN0.svg"
+dest_files=["res://.godot/imported/bN0.svg-af2a8c654a585a812d6978091d9cdef9.ctex"]
 
 [params]
 

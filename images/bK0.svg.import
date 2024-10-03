@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tjsgf8j5yx2d"
-path="res://.godot/imported/BKnight.svg-88a8fef1c8618cef995cddc417028847.ctex"
+uid="uid://d13ibgqfkfggk"
+path="res://.godot/imported/bK0.svg-df3621438078dba6903eed39492d985c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/BKnight.svg"
-dest_files=["res://.godot/imported/BKnight.svg-88a8fef1c8618cef995cddc417028847.ctex"]
+source_file="res://images/bK0.svg"
+dest_files=["res://.godot/imported/bK0.svg-df3621438078dba6903eed39492d985c.ctex"]
 
 [params]
 

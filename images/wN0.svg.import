@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxgl7kmbur256"
-path="res://.godot/imported/WKnight.svg-ab6ffec04b8c67e7708dff23d75e400e.ctex"
+path="res://.godot/imported/wN0.svg-c9a1a4570f54b4d49fe7a6b8e653bd78.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/WKnight.svg"
-dest_files=["res://.godot/imported/WKnight.svg-ab6ffec04b8c67e7708dff23d75e400e.ctex"]
+source_file="res://images/wN0.svg"
+dest_files=["res://.godot/imported/wN0.svg-c9a1a4570f54b4d49fe7a6b8e653bd78.ctex"]
 
 [params]
 

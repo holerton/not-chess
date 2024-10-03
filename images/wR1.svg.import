@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvteb6ofpw5h1"
-path="res://.godot/imported/WBishop.svg-fac9c3ecd251d622065e637279013c97.ctex"
+uid="uid://dmjp464vvbxgi"
+path="res://.godot/imported/wR1.svg-02a5d263e3ea7872aac8df05891c183a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/WBishop.svg"
-dest_files=["res://.godot/imported/WBishop.svg-fac9c3ecd251d622065e637279013c97.ctex"]
+source_file="res://images/wR1.svg"
+dest_files=["res://.godot/imported/wR1.svg-02a5d263e3ea7872aac8df05891c183a.ctex"]
 
 [params]
 

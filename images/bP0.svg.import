@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d13ibgqfkfggk"
-path="res://.godot/imported/BKing.svg-e551db48265f834b8019c6bc0116142a.ctex"
+uid="uid://c4pkw17o0onqh"
+path="res://.godot/imported/bP0.svg-ee61be4741d7cb227ac6fd4ef3bb3af5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/BKing.svg"
-dest_files=["res://.godot/imported/BKing.svg-e551db48265f834b8019c6bc0116142a.ctex"]
+source_file="res://images/bP0.svg"
+dest_files=["res://.godot/imported/bP0.svg-ee61be4741d7cb227ac6fd4ef3bb3af5.ctex"]
 
 [params]
 

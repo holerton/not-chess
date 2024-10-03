@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4pkw17o0onqh"
-path="res://.godot/imported/BPawn.svg-efcc87354af42ed3f5da55b6d8889f68.ctex"
+uid="uid://dlwcil4383pr"
+path="res://.godot/imported/bR0.svg-721ed86ce29b766c96548ef5ba13520d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/BPawn.svg"
-dest_files=["res://.godot/imported/BPawn.svg-efcc87354af42ed3f5da55b6d8889f68.ctex"]
+source_file="res://images/bR0.svg"
+dest_files=["res://.godot/imported/bR0.svg-721ed86ce29b766c96548ef5ba13520d.ctex"]
 
 [params]
 
