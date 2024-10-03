@@ -6,7 +6,6 @@ class_name Zebra
 ## Those parameters are used in parent's constructor.
 ## Also sets its textures.
 func _init(color: String, coords: String):
-	self.textures = [load("res://images/Zebra.svg")]
 	self.speed = 1
-	self.weather_rules["Snow"] = 0
+	self.terrain_weather_rules["Snow"] = 0
 	super(color, coords, "Zebra")

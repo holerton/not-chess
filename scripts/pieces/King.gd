@@ -6,6 +6,4 @@ class_name King
 ## Those parameters are used in parent's constructor.
 ## Also sets its textures.
 func _init(color: String, coords: String): 
-	self.textures = [load("res://images/WKing.svg") if color == "white"
-	else load("res://images/BKing.svg")]
 	super(color, coords, "King")

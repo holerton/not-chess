@@ -11,9 +11,7 @@ func _init(color: String, coords: String):
 	self.damage = 1
 	self.health = 2
 	self.special_action = true
-	self.textures = [load("res://images/WRookU.svg") if color == "white" else load("res://images/BRookU.svg"),
-	load("res://images/WRook.svg") if color == "white" else load("res://images/BRook.svg")]
-	self.terrain_rules["Desert"] = self.speed
+	self.terrain_weather_rules["Desert"] = self.speed
 	super(color, coords, "Rook")
 	
 

@@ -9,10 +9,8 @@ func _init(color: String, coords: String):
 	self.range = 2
 	self.speed = 1
 	self.damage = 1
-	self.textures = [load("res://images/WBishop.svg") if color == "white"
-	else load("res://images/BBishop.svg")]
-	self.terrain_rules["Desert"] = self.speed
-	self.weather_rules["Snow"] = 0
+	self.terrain_weather_rules["Desert"] = self.speed
+	self.terrain_weather_rules["Snow"] = 0
 	super(color, coords, "Bishop")
 
 func find_attackable(board: Board):

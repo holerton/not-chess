@@ -6,8 +6,6 @@ class_name Pawn
 ## Those parameters are used in parent's constructor.
 ## Also sets its textures.
 func _init(color: String, coords: String):
-	self.textures = [load("res://images/WPawn.svg") if color == "white"
-	else load("res://images/BPawn.svg")]
 	super(color, coords, "Pawn")
 	self.terrain_weather_rules.clear()
 
