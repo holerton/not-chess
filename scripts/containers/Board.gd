@@ -5,7 +5,6 @@ class_name Board
 
 ## Represents all the pieces on their respective places
 static var chessboard_map = []
-var gen = RandomNumberGenerator.new()
 ## Chessboard creation
 
 ## Sets up the Board.
@@ -22,7 +21,6 @@ func _ready():
 	
 	## Calling parent's _ready() method
 	super()
-
 
 ## Resizes and clears chessboard_map
 func clear_chessboard_map():
@@ -45,10 +43,10 @@ func clear_chessboard_map():
 ## Sets up starting position
 func basic_setup():
 	var coords = int_to_coords([1, board_height])
-	var white_king = add_piece("King", "white", coords)
+	var white_king = add_piece("King", "w", coords)
 	
 	coords = int_to_coords([board_width, 1])
-	var black_king = add_piece("King", "black", coords)
+	var black_king = add_piece("King", "b", coords)
 	return [white_king, black_king]
 
 ## Overriding parent's method, additionally marks a piece on the map
@@ -73,17 +71,12 @@ func clear_square(piece: BasePiece):
 	get_node(piece.coords).remove_child(piece)
 	piece.queue_free()
 
-## Replaces piece_to with piece_from
-func replace(piece_from: BasePiece, piece_to: BasePiece):
-	clear_square(piece_to)
-	traverse(piece_from, piece_to.coords)
-
 ## Getters and Checkers
 
 ## Accepts two parameters: pos - position on a map, dist - maximal distance
 ## Returns Array with coordinates of squares, distance to which 
 ## is less or equals to dist
-static func get_neighbors(pos: String, dist: int) -> Array:
+static func get_neighbors(pos: String, dist: int = 1) -> Array:
 	var xy = coords_to_int(pos)
 	var neighbors = []
 	for i in range(xy[0] - dist, xy[0] + dist + 1):
@@ -107,12 +100,12 @@ static func coords_to_int(pos: String):
 
 ## Returns true if a square corresponding to a given position is dark
 ## False otherwise
-static func is_dark(pos: String):
+static func is_dark(pos: String) -> bool:
 	var xy = coords_to_int(pos)
 	return (xy[0] + xy[1]) % 2 != len(chessboard_map) % 2
 
 ## Returns true if given position is inside the map, false otherwise
-static func is_in_bounds(pos: String):
+static func is_in_bounds(pos: String) -> bool:
 	var width = len(chessboard_map[0]) - 1
 	var height = len(chessboard_map) - 1
 	var xy = coords_to_int(pos)
@@ -120,11 +113,11 @@ static func is_in_bounds(pos: String):
 
 ## Returns true if square corresponding to a given position is empty
 ## False otherwise
-static func is_empty(pos: String):
+static func is_empty(pos: String) -> bool:
 	return get_square(pos) == '.'
 
 ## Returns 1, if colors are from the same team, 0 if neutral, -1 if enemies
-static func get_status(col1: String, col2: String):
+static func get_status(col1: String, col2: String) -> int:
 	return Global.teams.find_key(col1) * Global.teams.find_key(col2)
 
 ## Accepts two parameters:
@@ -209,7 +202,7 @@ func randomize_terrain():
 	var ter = Terrain.new()
 	var terrains = ter.randomize_terrain(self, [10, 17, 22, 25, 28, 30])
 	return terrains
-	
+
 func get_terrain(pos: String):
 	return get_node(pos).terrain
 

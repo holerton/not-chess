@@ -61,7 +61,7 @@ func _move_army_button_pressed():
 ## Creates all of the pieces in the PieceSpawner
 func basic_setup():
 	var pieces = ["Rook", "Bishop", "Night", "Pawn"]
-	var colors = ["white", "black"]
+	var colors = ["w", "b"]
 	var i = 1
 	for color in colors:
 		var j = 1
@@ -70,30 +70,12 @@ func basic_setup():
 			j += 1
 		i += 1
 
-## Accepts two parameters: 
-## pieces - Array which contains names of the pieces to activate
-## color - String with color of the said pieces
-## Selects necessary squares and changes their activity: from true to false and vice versa.
-func flip_active_squares(pieces: Array, piece_color: String):
-	var i = 1 if piece_color == "white" else 2
-	var all_pieces = ["Rook", "Bishop", "Night", "Pawn"]
-	for j in len(all_pieces):
-		if all_pieces[j] in pieces:
-			var square = int_to_coords([j + 1, i])
-			get_node(square).flip_activity()
-			active_squares.append(square)
-
 func set_active_squares_from_pieces(pieces: Array, piece_color: String):
-	var i = 1 if piece_color == "white" else 2
+	var i = 1 if piece_color == "w" else 2
 	var all_pieces = ["Rook", "Bishop", "Night", "Pawn"]
 	for j in len(all_pieces):
 		if all_pieces[j] in pieces:
 			active_squares.append(int_to_coords([j + 1, i]))
-
-func clear_active_squares():
-	for square in active_squares:
-		get_node(square).flip_activity()
-	active_squares.clear()
 
 ## Enables cancel_selection_button
 func enable_cancel_selection_button():
