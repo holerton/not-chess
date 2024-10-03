@@ -10,17 +10,19 @@ var players: Array
 ## Stores current unmoved army pieces
 var army_to_move = []
 
+## Chessboard
 var board: Board
 
+## PieceSpawner for piece cloning
 var spawner: PieceSpawner
 
 ## Prepares the game: creates two players and sets up Board and PieceSpawner
 ## After that calls method start_turn to begin the game
-func _ready():
+func _ready() -> void:
 	construct_gui()
 	self.board = $ChessboardRect/Chessboard
 	self.spawner = $RightRect/PieceSpawner
-	players = [Player.new("white"), Player.new("black")]
+	players = [Player.new("w"), Player.new("b")]
 	var kings = board.basic_setup()
 	spawner.basic_setup()
 	players[0].update_limits()
@@ -30,7 +32,7 @@ func _ready():
 	players[1].spawn_piece(kings[1])
 
 ## Adds children, sets every part of the gui in its place
-func construct_gui():
+func construct_gui() -> void:
 	var window_size = Vector2(Global.board_width * Global.tile_size + 
 	Global.tile_size * Global.piece_num, Global.board_height * Global.tile_size)
 	get_window().size = window_size
@@ -65,7 +67,7 @@ func construct_gui():
 
 ## Handles clicks on squares. If PieceSpawner is clicked, clones a piece.
 ## If Chessboard is clicked, calls handle_chessboard_click
-func _on_square_clicked(square: Square):
+func _on_square_clicked(square: Square) -> void:
 	var container = square.get_container_name()
 	if container == "PieceSpawner":
 		if square.state == Global.ACTIVE:
@@ -73,7 +75,7 @@ func _on_square_clicked(square: Square):
 	else:
 		handle_chessboard_click(square)
 
-func handle_chessboard_click(square: Square):
+func handle_chessboard_click(square: Square) -> void:
 	var state = square.state
 	var piece = square.get_piece()
 	var coords = square.name
@@ -86,17 +88,17 @@ func handle_chessboard_click(square: Square):
 		piece_attacked(piece)
 
 ## Sets the value of current_piece to piece
-func set_current_piece(piece: BasePiece):
+func set_current_piece(piece: BasePiece) -> void:
 	self.current_piece = piece
 
 ## Swaps two players, used at the beginning of each turn
-func swap_players():
+func swap_players() -> void:
 	self.players = [players[1], players[0]]
 
 ## If both players are alive, swaps them.
 ## Then highlights pieces that are available to clone.
 ## Otherwise stops the game and presents final dialog
-func start_turn():
+func start_turn() -> void:
 	spawner.enable_end_turn_button()
 	spawner.disable_cancel_selection_button()
 	if players[0].is_alive() and players[1].is_alive():
@@ -117,7 +119,7 @@ func start_turn():
 ## If army_to_move is empty, there are no more pieces to move
 ## Calls end_turn()
 ## Otherwise highlights all pieces in army_to_move
-func move_army(moved_piece):
+func move_army(moved_piece) -> void:
 	board.clear_highlighted()
 	army_to_move.erase(moved_piece)
 	if army_to_move.is_empty():
@@ -131,7 +133,7 @@ func move_army(moved_piece):
 
 ## Called when the turn ends.
 ## Clears everything and calls start_turn
-func end_turn():
+func end_turn() -> void:
 	spawner.clear_highlighted()
 	board.clear_highlighted()
 	if current_piece == null:
@@ -146,7 +148,7 @@ func end_turn():
 ## Highlights squares, accessible to clone to
 ## Otherwise means that player wants to move army
 ## Fills army_to_move and calls move_army(null) 
-func final_selection(new_piece):
+func final_selection(new_piece) -> void:
 	spawner.disable_move_army_button()
 	spawner.enable_cancel_selection_button()
 	var pieces = players[0].get_possible_pieces(board)
@@ -165,11 +167,11 @@ func final_selection(new_piece):
 ## Moves a piece on a board and calls piece_moved().
 ## Otherwise means, that player wants to clone a piece
 ## Sets a piece on the board and calls piece_added(). 
-func empty_square_selected(pos):
+func empty_square_selected(pos) -> void:
 	if players[0].has_piece(current_piece):
 		var tween = create_tween()
 		tween.connect("finished", finish_move.bind([current_piece]))
-		var route = current_piece.find_route(board, pos)
+		var route = current_piece.get_route(board, pos)
 		board.traverse(current_piece, pos)
 		for square in route:
 			animated_move(current_piece, square, tween)
@@ -183,7 +185,7 @@ func empty_square_selected(pos):
 ## Called when new piece is cloned to an empty square
 ## If new piece is a Pawn, calls end_turn
 ## Otherwise forms army_to_move and calls move_army(current_piece)
-func piece_added():
+func piece_added() -> void:
 	board.clear_highlighted()
 	spawner.disable_cancel_selection_button()
 	players[0].spawn_piece(current_piece)
@@ -197,7 +199,7 @@ func piece_added():
 ## Called after piece moves to an empty square.
 ## If piece has any attackable squares, function highlights them and its position
 ## Otherwise calls move_army(current_piece)
-func piece_moved():
+func piece_moved() -> void:
 	spawner.disable_cancel_selection_button()
 	board.clear_highlighted()
 	if current_piece.speed > 0:
@@ -219,7 +221,7 @@ func piece_moved():
 ## If selected_piece is the current_piece 
 ## it means that player wants to end the movement of that piece.
 ## Calls move_army(current_piece)
-func existing_piece_selected(selected_piece):
+func existing_piece_selected(selected_piece) -> void:
 	if selected_piece.name == "King":
 		selected_piece.get_damage(1)
 		players[1].remove_if_dead(selected_piece)
@@ -227,7 +229,7 @@ func existing_piece_selected(selected_piece):
 		
 		var tween = create_tween()
 		tween.connect("finished", finish_move.bind([current_piece]))
-		var route = current_piece.find_route(board, selected_piece.coords)
+		var route = current_piece.get_route(board, selected_piece.coords)
 		board.traverse(current_piece, selected_piece.coords)
 		for square in route:
 			animated_move(current_piece, square, tween)
@@ -237,7 +239,7 @@ func existing_piece_selected(selected_piece):
 	board.clear_highlighted()
 	if current_piece != selected_piece:
 		set_current_piece(selected_piece)
-		board.set_active_squares(current_piece.find_reachable(board))
+		board.set_active_squares(current_piece.get_reachable(board))
 		board.set_attacked_squares(current_piece.find_attackable(board))
 		board.flip_highlighted()
 		spawner.enable_cancel_selection_button()
@@ -256,7 +258,7 @@ func existing_piece_selected(selected_piece):
 ## Lastly if special_action is true 
 ## function highlights special squares for that action
 ## Otherwise calls move_army 
-func piece_attacked(other_piece):
+func piece_attacked(other_piece) -> void:
 	board.clear_highlighted()
 	var special_action = current_piece.attack(other_piece)
 	if players[1].remove_if_dead(other_piece):
@@ -284,7 +286,7 @@ func piece_attacked(other_piece):
 ##
 ## Otherwise player wants to cancel selection of a piece to clone.
 ## Clears highlighted squares, calls start_turn to repeat selection 
-func _on_cancel_selection():
+func _on_cancel_selection() -> void:
 	spawner.disable_cancel_selection_button()
 	if players[0].has_piece(current_piece):
 		move_army(null)
@@ -293,20 +295,23 @@ func _on_cancel_selection():
 		start_turn()
 	set_current_piece(null)
 
-func animated_move(piece: BasePiece, to: String, tween: Tween):
+## Called after animated_move to connect moved pieces to new squares
+func finish_move(moved_pieces: Array) -> void:
+	for piece in moved_pieces:
+		board.remove_child(piece)
+		piece.set_position(Vector2(Global.tile_size / 2, Global.tile_size / 2))
+		board.get_node(piece.coords).add_child(piece)
+
+## Single-square move animation for a given piece
+func animated_move(piece: BasePiece, to: String, tween: Tween) -> void:
 	var xy_to = Board.coords_to_int(to)
 	var loc_to = Vector2((xy_to[0] - 0.5) * Global.tile_size,
 	(xy_to[1] - 0.5) * Global.tile_size)
 	
 	tween.tween_property(piece, "position", loc_to, 0.25)
 
-func finish_move(moved_pieces: Array):
-	for piece in moved_pieces:
-		board.remove_child(piece)
-		piece.set_position(Vector2(Global.tile_size / 2, Global.tile_size / 2))
-		board.get_node(piece.coords).add_child(piece)
-
-func animated_death(piece: BasePiece):
+## Death animation for a given piece
+func animated_death(piece: BasePiece) -> void:
 	var tween = create_tween()
 	tween.connect("finished", board.clear_square.bind(piece))
 	tween.tween_property(piece, "modulate", Color.RED, 0.15)

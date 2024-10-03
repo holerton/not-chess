@@ -8,10 +8,10 @@ var climate: Climate
 
 func _ready():
 	super()
-	$RightRect/PieceSpawner.anchors_preset = PRESET_CENTER_TOP
-	self.terrain_map = $ChessboardRect/Chessboard.randomize_terrain()
+	spawner.anchors_preset = PRESET_CENTER_TOP
+	self.terrain_map = board.randomize_terrain()
 	self.climate = Climate.new(self.terrain_map)
-	$ChessboardRect/Chessboard.flip_weather(self.climate.initial_climate())
+	board.flip_weather(self.climate.initial_climate())
 	var size = Global.board_height * Global.board_width 
 	var num_of_zebras = min(size / 25, 16) # 64 / 25 = 2
 	
@@ -29,8 +29,8 @@ func _ready():
 			positions.append(right_neighbors[len - i - 1])
 	
 	for i in range(num_of_zebras) :
-		auto_pieces.append(Zebra.new("neutral", positions[i]))
-		$ChessboardRect/Chessboard.set_piece(auto_pieces[-1])
+		auto_pieces.append(Zebra.new("n", positions[i]))
+		board.set_piece(auto_pieces[-1])
 	
 	self.seasons = PieChart.new(Vector2($RightRect.size[0], $RightRect.size[0]))
 	$RightRect.add_child(seasons)
@@ -41,7 +41,7 @@ func _ready():
 	start_turn()
 
 func end_turn():
-	$RightRect/PieceSpawner.disable_end_turn_button()
+	spawner.disable_end_turn_button()
 	var tween = get_tree().create_tween()
 	var moved_pieces = []
 	tween.set_parallel()
@@ -50,10 +50,10 @@ func end_turn():
 	for piece in auto_pieces:
 		if piece.speed > 0:
 			someone_moved = true
-			var pos = piece.move_in_direction($ChessboardRect/Chessboard)
+			var pos = piece.move_in_direction(board)
 			if pos != piece.coords:
 				animated_move(piece, pos, tween)
-				$ChessboardRect/Chessboard.traverse(piece, pos)
+				board.traverse(piece, pos)
 				moved_pieces.append(piece)
 		else:
 			piece.skip_turn()
@@ -68,11 +68,11 @@ func change_climate():
 	season_counter = (season_counter + 1) % 32
 	if season_counter % 2 == 0:
 		self.seasons.change_month()
-	var cleared_squares = $ChessboardRect/Chessboard.flip_weather(
+	var cleared_squares = board.flip_weather(
 		self.climate.calc_climate(season_counter / 2)
 	)
 	for square in cleared_squares:
-		var piece = $ChessboardRect/Chessboard.get_piece(square)
+		var piece = board.get_piece(square)
 		if piece.name != "Pawn" and piece.name != "King":
 			piece.get_damage(piece.health)
 			animated_death(piece)

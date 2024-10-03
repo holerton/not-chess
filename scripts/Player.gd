@@ -20,9 +20,6 @@ var king: King = null
 ## Represents how many more army pieces can Player add to his army 
 var limit: int = 0
 
-## Array of pieces, that skip next turn
-var skipping_pieces: Dictionary = {}
-
 ## Creates a new Player with the given color
 func _init(color: String):
 	self.color = color
@@ -35,7 +32,6 @@ func _init(color: String):
 ## Returns an Array of coordinates.
 func get_accessible(board: Board, piece: BasePiece):
 	var dark: bool = piece.name != "Pawn"
-	var inaccessible: Array = piece.get_inaccessible_squares()
 	if is_alive():
 		var accessible = []
 		
@@ -46,20 +42,16 @@ func get_accessible(board: Board, piece: BasePiece):
 		## When all of the Pawns and King are explored, returns accessible
 		while not square_queue.is_empty():
 			var square = square_queue.pop_front()
-			var neighbors = Board.get_neighbors(square, 1)
+			var neighbors = Board.get_neighbors(square)
 			for neighbor in neighbors:
 				## Accessible square must be the searched color and empty
 				if Board.is_dark(neighbor) == dark and Board.is_empty(neighbor):
 					var terrain = board.get_terrain(neighbor)
 					var weather = board.get_weather(neighbor)
 					
-					var finds = []
-					finds.resize(3)
-					finds[0] = inaccessible.find([terrain, weather])
-					finds[1] = inaccessible.find(terrain)
-					finds[2] = inaccessible.find(weather)
+					var penalty = piece.calc_penalty(terrain, weather)
 					
-					if finds[0] + finds[1] + finds[2] == -3:
+					if penalty < Global.MY_INF:
 						## If the square is not added yet, add
 						if neighbor not in accessible:
 							accessible.append(neighbor)
@@ -157,10 +149,6 @@ func has_piece(piece: BasePiece):
 	if piece in army:
 		return true
 	return false
-
-## Adds piece to skipping_pieces
-func add_skipping_piece(piece: BasePiece, skips: int):
-	skipping_pieces[piece] = skips
 
 func update_limits():
 	self.available_pieces = Global.limits.duplicate(true)
