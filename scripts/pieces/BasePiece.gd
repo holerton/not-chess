@@ -33,14 +33,11 @@ var special_action: bool = false
 ## Stores all textures for the sprite
 var textures: Array = [null]
 
-## Special terrain rules for movement
-var terrain_rules: Dictionary = {}
-
-## Special weather rules for movement
-var weather_rules: Dictionary = {"Snow": 1}
-
 ## Special rules for weather-terrain combination
-var terrain_weather_rules: Dictionary = {["Water", "None"]: INF}
+var terrain_weather_rules: Dictionary = {["Water", "None"]: Global.MY_INF, "Snow": 1}
+
+## Map of distances to squares 
+var distances_map: Array = []
 
 ## Creates new piece given its color, coordinates in the container, position in the Square and name
 func _init(color: String, coords: String, name: String = "#"):
@@ -48,9 +45,10 @@ func _init(color: String, coords: String, name: String = "#"):
 	self.coords = coords
 	self.position = Vector2(Global.tile_size / 2, Global.tile_size / 2)
 	self.name = name
-	self.shortname = color[0] + str(name)[0]
+	self.shortname = color + str(name)[0]
+	self.textures = Global.PIECE_TEXTURES[self.shortname]
 	self.texture = self.textures[self.health - 1]
-	self.terrain_rules["Mountain"] = self.speed
+	self.terrain_weather_rules["Mountain"] = self.speed
 	self.max_speed = self.speed
 
 ## Returns BasePiece with the same properties as the self except for coordinates, which are empty
@@ -58,64 +56,33 @@ func clone() -> BasePiece:
 	var other = new(color, "")
 	return other
 
-## Returns visited array with starting point visited
-func fill_visited() -> Array:
+## Returns mask Array filled with value
+func fill_mask(value) -> Array:
 	var xy = Board.coords_to_int(coords)
 	
-	var visited = []
+	var mask = []
 	for i in Global.board_height + 2:
-		visited.append([])
-		visited[i].resize(Global.board_width + 2)
-		visited[i].fill(false)
+		mask.append([])
+		for j in Global.board_width + 2: 
+			mask[-1].append(value.duplicate() 
+			if typeof(value) == TYPE_ARRAY else value)
 	
-	visited[xy[1]][xy[0]] = true
-	
-	return visited
+	return mask
 
-## Uses DFS to fill and return the Array with coordinates of all of the reachable squares. 
-func find_reachable(board: Board) -> Array:
-	var visited = fill_visited()
-	
-	var square_queue = [[coords, 0]] ## Queue saves last visited square and distance to it
-	var reachable = [coords]
-	
-	while not square_queue.is_empty():
-		var square = square_queue.reduce(func(a, b): return a if a[1] < b[1] else b)
-		square_queue.erase(square)
-		
-		## When DFS reaches the point where distance equals to speed, return result
-		if square[1] >= speed: 
-			return reachable
-		
-		var neighbors = board.get_neighbors(square[0], 1)
-		
-		for elem in neighbors: ## Going through neighbors
-			var xy = board.coords_to_int(elem)
-			
-			## Marking all of the visited squares (piece travels through black squares)
-			if board.is_dark(elem) and not visited[xy[1]][xy[0]]:
-				visited[xy[1]][xy[0]] = true
-				var terrain = board.get_terrain(elem)
-				var weather = board.get_weather(elem)
-				var dist = calc_distance(terrain, weather, square[1])
-				## If square is empty OR an enemy king, its reachable
-				if dist != INF:
-					if board.is_empty(elem) or board.is_enemy_king(color[0], elem):
-						reachable.append(elem)
-						square_queue.append([elem, dist])
-					elif board.is_ally(color[0], elem):
-						square_queue.append([elem, dist])
+## Returns an Array of reachable squares, finds them in distances_map
+func get_reachable(board: Board) -> Array:
+	var reachable = []
+	get_distances(board)
+	for entry in distances_map:
+		if not board.is_ally(color, Board.int_to_coords(entry[0])):
+			reachable.append(Board.int_to_coords(entry[0]))
 	return reachable
 
 ## Uses DFS to fill and return the Array with coordinates of all of the attackable squares.
 func find_attackable(board: Board) -> Array:
 	var xy = Board.coords_to_int(coords)
 	
-	var visited = []
-	for i in Global.board_height + 2:
-		visited.append([])
-		for j in Global.board_width + 2:
-			visited[i].append(false)
+	var visited = fill_mask(false)
 	visited[xy[1]][xy[0]] = true
 	
 	var square_queue = [[coords, 0]] ## Queue saves last visited square and distance to it
@@ -129,7 +96,7 @@ func find_attackable(board: Board) -> Array:
 			return attackable
 		
 		square[1] += 1 ## Distance increase
-		var neighbors = Board.get_neighbors(square[0], 1)
+		var neighbors = Board.get_neighbors(square[0])
 		
 		for elem in neighbors: ## Going through neighbors
 			xy = Board.coords_to_int(elem)
@@ -139,13 +106,51 @@ func find_attackable(board: Board) -> Array:
 				visited[xy[1]][xy[0]] = true
 				
 				## If square is an enemy AND not an enemy king, its attackable
-				if Board.is_enemy(color[0], elem) and not Board.is_enemy_king(color[0], elem):
+				if Board.is_enemy(color, elem) and not Board.is_enemy_king(color, elem):
 					attackable.append(elem)
-				if not Board.is_neutral(color[0], elem):
+				if not Board.is_neutral(color, elem):
 					square_queue.append([elem, square[1]])
 	return attackable
 
-## Changes coordinates to a new value
+## Fills distances_map with distances to squares
+func get_distances(board: Board, destination = null) -> void:
+	var xy = Board.coords_to_int(coords)
+	# 0: coords, 1: where from, 2: distance
+	distances_map = [[xy, [-1, -1], 0]]
+	var visited = fill_mask(false)
+	var distances = fill_mask(Global.MY_INF)
+	distances[xy[1]][xy[0]] = 0
+	var squares = [xy]
+	while not squares.is_empty():
+		var next_square = [-1, -1]
+		var min_dist = Global.MY_INF
+		for square in squares:
+			if distances[square[1]][square[0]] < min_dist:
+				next_square = square
+				min_dist = distances[square[1]][square[0]]
+		squares.erase(next_square)
+		if next_square == destination or \
+		(min_dist == self.speed and destination == null):
+			break
+		var current_pos = Board.int_to_coords(next_square)
+		var neighbors = Board.get_neighbors(current_pos)
+		for neighbor in neighbors:
+			xy = Board.coords_to_int(neighbor)
+			if not visited[xy[1]][xy[0]] and Board.is_dark(neighbor):
+				var new_dist = calc_dist_from(board, current_pos, 
+				neighbor, min_dist)
+				var current_dist = distances[xy[1]][xy[0]]
+				if new_dist < current_dist:
+					distances[xy[1]][xy[0]] = new_dist
+					var ind = find_in_distances_map(xy)
+					if ind == -1:
+						distances_map.append([])
+					distances_map[ind] = [xy, next_square, new_dist]
+					if xy not in squares:
+						squares.append(xy)
+		visited[next_square[1]][next_square[0]] = true
+
+## Changes coordinates to a new value, sets speed for the next turn
 func move(dest: String, board: Board) -> void:
 	var dist = Board.distance(coords, dest)
 	coords = dest
@@ -153,12 +158,12 @@ func move(dest: String, board: Board) -> void:
 	var weather = board.get_weather(coords)
 	calc_next_turn_speed(terrain, weather, dist)
 
-func set_coords(pos: String):
+func set_coords(pos: String) -> void:
 	self.coords = pos
 
 ## Attacks an enemy piece. If distance between them is 1, gets attacked by an enemy piece
 ## Returns true, if piece has a special action after an attack. Otherwise false
-func attack(enemy) -> bool:
+func attack(enemy: BasePiece) -> bool:
 	enemy.get_damage(damage)
 	if Board.distance(coords, enemy.coords) == 1:
 		get_damage(enemy.damage)
@@ -171,83 +176,58 @@ func get_damage(damage: int) -> void:
 		self.texture = self.textures[self.health - 1]
 
 ## Returns true if health of the piece is greater then 0. Otherwise false
-func is_alive():
+func is_alive() -> bool:
 	return health > 0
 
-func calc_distance(terrain: String, weather: String, dist: int):
-	var inc = 1
-	if [terrain, weather] in terrain_weather_rules:
-		inc += terrain_weather_rules[[terrain, weather]]
+## Calculates distance based on weather and terrain of from and to squares
+func calc_dist_from(board: Board, from: String, to: String, dist: int) -> int:
+	if board.is_empty(to) or board.is_enemy_king(color, to) or \
+	board.is_ally(color, to): 
+		var inc = 1
+		var terrain: String = board.get_terrain(to)
+		var weather: String = board.get_weather(to)
+		if calc_penalty(terrain, weather) >= Global.MY_INF:
+			return Global.MY_INF
+		if from != coords:
+			terrain = board.get_terrain(from)
+			weather = board.get_weather(from)
+			inc += calc_penalty(terrain, weather)
+		return dist + inc
 	else:
-		if terrain in terrain_rules:
-			inc += terrain_rules[terrain]
-		if weather in weather_rules:
-			inc += weather_rules[weather]
-	return INF if inc == INF else min(dist + inc, self.speed)
+		return Global.MY_INF
 
-func calc_next_turn_speed(terrain: String, weather: String, dist: int):
-	var dec = 0
-	if terrain in terrain_rules:
-		dec += terrain_rules[terrain]
-	if weather == "Snow":
-		if dist == self.speed:
-			dec += weather_rules["Snow"]
-	elif weather in weather_rules:
-		dec += weather_rules[weather]
+## Returns penalty based on weather and terrain of the square
+func calc_penalty(terrain: String, weather: String) -> int:
+	return terrain_weather_rules.get([terrain, weather], 0) + \
+	terrain_weather_rules.get(terrain, 0) + terrain_weather_rules.get(weather, 0)
+
+## Calculates next turn speed based on the square the piece landed on
+func calc_next_turn_speed(terrain: String, weather: String, dist: int) -> void:
+	var dec = calc_penalty(terrain, weather) - \
+	(terrain_weather_rules["Snow"] 
+	if weather == "Snow" and dist < self.speed else 0)
 	self.speed = self.max_speed - dec
 
-func skip_turn():
+## Increases self.speed
+func skip_turn() -> void:
 	self.speed = min(self.speed + self.max_speed, self.max_speed)
 
-func get_inaccessible_squares() -> Array:
-	var inaccessible: Array = []
-	
-	for rule in terrain_weather_rules:
-		if terrain_weather_rules[rule] == INF:
-			inaccessible.append(rule)
-	
-	for rule in terrain_rules:
-		if terrain_rules[rule] == INF:
-			inaccessible.append(rule)
-	
-	for rule in weather_rules:
-		if weather_rules[rule] == INF:
-			inaccessible.append(rule)
-	return inaccessible
-	
-func find_route(board: Board, to: String):
-	var visited = fill_visited()
-	var square_queue = [[coords, 0]]
-	var squares = []
-	
-	while not square_queue.is_empty():
-		var square = square_queue.pop_front()
-		
-		var neighbors = board.get_neighbors(square[0], 1)
-		if to in neighbors:
-			squares.append([square[0], to])
-			break
-		
-		for elem in neighbors:
-			var xy = board.coords_to_int(elem)
-			
-			if board.is_dark(elem) and not visited[xy[1]][xy[0]]:
-				visited[xy[1]][xy[0]] = true
-				var terrain = board.get_terrain(elem)
-				var weather = board.get_weather(elem)
-				var dist = calc_distance(terrain, weather, square[1])
-				
-				if dist < speed:
-					if board.is_empty(elem) or board.is_ally(color[0], elem):
-						squares.append([square[0], elem])
-						square_queue.append([elem, dist])
-	var next = squares[-1]
+## Returns route to a destination, finding it from distances_map
+func get_route(board: Board, to: String) -> Array:
+	var xy = Board.coords_to_int(to)
 	var route = [to]
-	while next[0] != coords:
-		for square in squares:
-			if square[1] == next[0]:
-				next = square
-				break
-		route.append(next[1])
+	var pos = Board.coords_to_int(coords)
+	var parent = distances_map[find_in_distances_map(xy)][1]
+	if parent == [-1, -1]:
+		return []
+	while parent != pos:
+		route.append(Board.int_to_coords(parent))
+		parent = distances_map[find_in_distances_map(parent)][1]
 	route.reverse()
 	return route
+	
+func find_in_distances_map(xy: Array):
+	for i in range(len(distances_map)):
+		if distances_map[i][0] == xy:
+			return i
+	return -1
