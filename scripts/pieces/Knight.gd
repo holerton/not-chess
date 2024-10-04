@@ -5,7 +5,7 @@ class_name Knight
 ## Creates a new Knight. Accepts two parameters: color, coords. 
 ## Those parameters are used in parents's constructor.
 ## Also sets it's range, speed, damage and textures.
-func _init(color: String, coords: String):
+func _init(color: String, coords: Array):
 	self.range = 1
 	self.speed = 2
 	self.damage = 1

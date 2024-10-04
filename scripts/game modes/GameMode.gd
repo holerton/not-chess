@@ -40,7 +40,8 @@ func construct_gui() -> void:
 	
 	var chessboard_rect = ColorRect.new()
 	chessboard_rect.name = "ChessboardRect"
-	chessboard_rect.size = Vector2(Global.board_width * Global.tile_size, window_size[1])
+	chessboard_rect.size = Vector2(
+	Global.board_width * Global.tile_size, window_size[1])
 	add_child(chessboard_rect)
 	
 	var chessboard = Board.new()
@@ -50,7 +51,8 @@ func construct_gui() -> void:
 	var right_rect = ColorRect.new()
 	right_rect.name = "RightRect"
 	right_rect.color = Color.SEA_GREEN
-	right_rect.size = Vector2(Global.tile_size * Global.piece_num, window_size[1])
+	right_rect.size = Vector2(
+	Global.tile_size * Global.piece_num, window_size[1])
 	add_child(right_rect)
 	right_rect.layout_mode = 1
 	right_rect.anchors_preset = PRESET_TOP_RIGHT
@@ -78,7 +80,8 @@ func _on_square_clicked(square: Square) -> void:
 func handle_chessboard_click(square: Square) -> void:
 	var state = square.state
 	var piece = square.get_piece()
-	var coords = square.name
+	var ind = square.get_index()
+	var coords = [ind % Global.board_width + 1, ind / Global.board_width + 1]
 	if state == Global.ACTIVE:
 		if piece != null:
 			existing_piece_selected(piece)
@@ -300,13 +303,12 @@ func finish_move(moved_pieces: Array) -> void:
 	for piece in moved_pieces:
 		board.remove_child(piece)
 		piece.set_position(Vector2(Global.tile_size / 2, Global.tile_size / 2))
-		board.get_node(piece.coords).add_child(piece)
+		board.get_square(piece.coords).add_child(piece)
 
 ## Single-square move animation for a given piece
-func animated_move(piece: BasePiece, to: String, tween: Tween) -> void:
-	var xy_to = Board.coords_to_int(to)
-	var loc_to = Vector2((xy_to[0] - 0.5) * Global.tile_size,
-	(xy_to[1] - 0.5) * Global.tile_size)
+func animated_move(piece: BasePiece, to: Array, tween: Tween) -> void:
+	var loc_to = Vector2((to[0] - 0.5) * Global.tile_size,
+	(to[1] - 0.5) * Global.tile_size)
 	
 	tween.tween_property(piece, "position", loc_to, 0.25)
 

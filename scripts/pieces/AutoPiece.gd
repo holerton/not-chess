@@ -2,16 +2,15 @@ extends BasePiece
 class_name AutoPiece
 
 var current_direction: String = "NW"
-var dest: String
+var dest: Array
 
 func set_destination(board: Board):
-	var xy = Board.coords_to_int(coords)
 	var dest_array = [1, 1]
 	var rand_choice = randi() % 2
 	var limits = [Global.board_width, Global.board_height]
 	var get_new_pos: Callable
 	
-	if xy[0] < Global.board_width / 2:
+	if coords[0] < Global.board_width / 2:
 		dest_array[rand_choice] = limits[rand_choice]
 		get_new_pos = func(ind): return randi_range(2, limits[ind])
 	else:
@@ -19,17 +18,17 @@ func set_destination(board: Board):
 		get_new_pos = func(ind): return randi_range(1, limits[ind] - 1)
 	rand_choice = (rand_choice + 1) % 2
 	
-	while dest_array[rand_choice] == 1 or not Board.is_dark(self.dest) or board.get_terrain(self.dest) == "Water":
+	while dest_array[rand_choice] == 1 or \
+	not Board.is_dark(self.dest) or board.get_terrain(self.dest) == "Water":
 		dest_array[rand_choice] = get_new_pos.call(rand_choice)
-		self.dest = Board.int_to_coords(dest_array)
+		self.dest = dest_array
 
 func give_move_to_dest(board: Board):
-	var xy = Board.coords_to_int(coords)
 	var visited = fill_mask(false)
 	var distances = fill_mask(Global.MY_INF)
-	distances[xy[1]][xy[0]] = 0
+	distances[coords[1]][coords[0]] = 0
 	
-	var queue = [xy]
+	var queue = [coords]
 	
 
 func move_to_dest(board: Board):
@@ -42,14 +41,13 @@ func auto_move(board: Board):
 	return pos
 
 func give_move_in_direction(board: Board, dir: String):
-	var xy = Board.coords_to_int(coords)
-	var x = xy[0]
-	var y = xy[1]
+	var x = coords[0]
+	var y = coords[1]
 	var reachable = get_reachable(board)
 	var result = []
 	var append_stuff = func(mult1, mult2):
 			for i in range(1, speed + 1):
-				var square = Board.int_to_coords([x + i * mult1, y + i * mult2])
+				var square = [x + i * mult1, y + i * mult2]
 				if square in reachable:
 					result.append(square)
 	match dir:
@@ -71,7 +69,7 @@ func give_move_in_direction(board: Board, dir: String):
 			append_stuff.call(-1, 0)
 	return result
 
-func move_in_direction(board):
+func move_in_direction(board: Board):
 	var directions = ["NW", "N", "NE", "E", "SE", "S", "SW", "W"]
 	
 	while directions[0] != current_direction:

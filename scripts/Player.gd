@@ -108,7 +108,8 @@ func remove_if_dead(piece: BasePiece):
 func get_possible_pieces(board: Board):
 	var result = []
 	if limit > 0:
-		var pieces = [Rook.new(color, ""), Bishop.new(color, ""), Knight.new(color, "")]
+		var pieces = [Rook.new(color, [-1, -1]),\
+		Bishop.new(color, [-1, -1]), Knight.new(color, [-1, -1])]
 		for piece in pieces:
 			if not get_accessible(board, piece).is_empty() and available_pieces[piece.name] > 0:
 				result.append(piece.name)

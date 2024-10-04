@@ -66,7 +66,7 @@ func basic_setup():
 	for color in colors:
 		var j = 1
 		for piece in pieces:
-			add_piece(piece, color, int_to_coords([j, i]))
+			add_piece(piece, color, [j, i])
 			j += 1
 		i += 1
 
@@ -75,7 +75,7 @@ func set_active_squares_from_pieces(pieces: Array, piece_color: String):
 	var all_pieces = ["Rook", "Bishop", "Night", "Pawn"]
 	for j in len(all_pieces):
 		if all_pieces[j] in pieces:
-			active_squares.append(int_to_coords([j + 1, i]))
+			active_squares.append([j + 1, i])
 
 ## Enables cancel_selection_button
 func enable_cancel_selection_button():

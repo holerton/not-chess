@@ -16,9 +16,9 @@ func _ready():
 	var num_of_zebras = min(size / 25, 16) # 64 / 25 = 2
 	
 	# two 4x4 squares: first in top left corner and second in bottom right corner
-	var left_neighbors = Board.get_neighbors(Board.int_to_coords([0, 0]), 4)
+	var left_neighbors = Board.get_neighbors([0, 0], 4)
 	var right_neighbors = Board.get_neighbors(
-	Board.int_to_coords([Global.board_width + 1, Global.board_height + 1]), 4)
+	[Global.board_width + 1, Global.board_height + 1], 4)
 	
 	var positions = []
 	var len = len(left_neighbors)

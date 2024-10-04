@@ -5,7 +5,7 @@ class_name Rook
 ## Creates a new Rook. Accepts three parameters: color, coords. 
 ## Those parameters are used in parent's constructor.
 ## Also sets its range, speed, damage, health, special_action and textures.
-func _init(color: String, coords: String):
+func _init(color: String, coords: Array):
 	self.range = 1
 	self.speed = 1
 	self.damage = 1

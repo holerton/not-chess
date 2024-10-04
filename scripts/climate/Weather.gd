@@ -20,7 +20,7 @@ func initial_weather():
 				changed_squares.append(square)
 	return changed_squares
 
-func appear_or_disappear(square: String, app_prob: int, dis_prob: int):
+func appear_or_disappear(square: Array, app_prob: int, dis_prob: int):
 	var status = 0
 	if square in affected_squares:
 		var chance = randi_range(1, 100)

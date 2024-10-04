@@ -5,5 +5,5 @@ class_name King
 ## Creates a new King. Accepts two parameters: color, coords. 
 ## Those parameters are used in parent's constructor.
 ## Also sets its textures.
-func _init(color: String, coords: String): 
+func _init(color: String, coords: Array): 
 	super(color, coords, "King")

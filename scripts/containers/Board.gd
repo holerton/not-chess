@@ -42,33 +42,29 @@ func clear_chessboard_map():
 
 ## Sets up starting position
 func basic_setup():
-	var coords = int_to_coords([1, board_height])
-	var white_king = add_piece("King", "w", coords)
-	
-	coords = int_to_coords([board_width, 1])
-	var black_king = add_piece("King", "b", coords)
+	var white_king = add_piece("King", "w", [1, board_height])
+	var black_king = add_piece("King", "b", [board_width, 1])
 	return [white_king, black_king]
 
 ## Overriding parent's method, additionally marks a piece on the map
-func add_piece(piece: String, color: String, pos: String) -> BasePiece:
+func add_piece(piece: String, color: String, pos: Array) -> BasePiece:
 	var new_piece = super(piece, color, pos)
 	add_to_the_map(pos, new_piece.shortname)
 	return new_piece
 
 ## Sets a piece on the square and marks it on a map
 func set_piece(piece: BasePiece):
-	get_node(piece.coords).add_child(piece)
+	get_square(piece.coords).add_child(piece)
 	add_to_the_map(piece.coords, piece.shortname)
 
 ## Sets value to a selected position on a map
-func add_to_the_map(pos: String, value: String):
-	var xy = coords_to_int(pos)
-	chessboard_map[xy[1]][xy[0]] = value
+func add_to_the_map(pos: Array, value: String):
+	chessboard_map[pos[1]][pos[0]] = value
 
 ## Deletes a piece from Square and map
 func clear_square(piece: BasePiece):
 	add_to_the_map(piece.coords, ".")
-	get_node(piece.coords).remove_child(piece)
+	get_square(piece.coords).remove_child(piece)
 	piece.queue_free()
 
 ## Getters and Checkers
@@ -76,45 +72,32 @@ func clear_square(piece: BasePiece):
 ## Accepts two parameters: pos - position on a map, dist - maximal distance
 ## Returns Array with coordinates of squares, distance to which 
 ## is less or equals to dist
-static func get_neighbors(pos: String, dist: int = 1) -> Array:
-	var xy = coords_to_int(pos)
+static func get_neighbors(pos: Array, dist: int = 1) -> Array:
 	var neighbors = []
-	for i in range(xy[0] - dist, xy[0] + dist + 1):
-		for j in range(xy[1] - dist, xy[1] + dist + 1):
-			var coord = int_to_coords([i, j])
-			if coord != pos and is_in_bounds(coord):
-				neighbors.append(coord)
+	for i in range(pos[0] - dist, pos[0] + dist + 1):
+		for j in range(pos[1] - dist, pos[1] + dist + 1):
+			if [i, j] != pos and is_in_bounds([i, j]):
+				neighbors.append([i, j])
 	return neighbors
 
 ## Returns map mark for a given position
-static func get_square(pos: String):
-	var xy = coords_to_int(pos)
-	return chessboard_map[xy[1]][xy[0]]
-
-## Returns two integers from position string
-static func coords_to_int(pos: String):
-	var dash_index = pos.find("-")
-	var x = int(pos.substr(0, dash_index))
-	var y = int(pos.substr(dash_index + 1, len(pos) - dash_index))
-	return [x, y]
+static func get_mark(pos: Array):
+	return chessboard_map[pos[1]][pos[0]]
 
 ## Returns true if a square corresponding to a given position is dark
 ## False otherwise
-static func is_dark(pos: String) -> bool:
-	var xy = coords_to_int(pos)
-	return (xy[0] + xy[1]) % 2 != len(chessboard_map) % 2
+static func is_dark(pos: Array) -> bool:
+	return (pos[0] + pos[1]) % 2 != len(chessboard_map) % 2
 
 ## Returns true if given position is inside the map, false otherwise
-static func is_in_bounds(pos: String) -> bool:
-	var width = len(chessboard_map[0]) - 1
-	var height = len(chessboard_map) - 1
-	var xy = coords_to_int(pos)
-	return 0 < xy[0] and xy[0] < width and 0 < xy[1] and xy[1] < height
+static func is_in_bounds(pos: Array) -> bool:
+	return 0 < pos[0] and pos[0] <= Global.board_width and \
+	0 < pos[1] and pos[1] <= Global.board_height
 
 ## Returns true if square corresponding to a given position is empty
 ## False otherwise
-static func is_empty(pos: String) -> bool:
-	return get_square(pos) == '.'
+static func is_empty(pos: Array) -> bool:
+	return get_mark(pos) == '.'
 
 ## Returns 1, if colors are from the same team, 0 if neutral, -1 if enemies
 static func get_status(col1: String, col2: String) -> int:
@@ -125,8 +108,8 @@ static func get_status(col1: String, col2: String) -> int:
 ## pos - coordinates of the square that needs to be checked
 ## Returns true if checked square contains the piece of opposing color.
 ## False otherwise
-static func is_enemy(color: String, pos: String) -> bool:
-	var square = get_square(pos)
+static func is_enemy(color: String, pos: Array) -> bool:
+	var square = get_mark(pos)
 	if len(square) == 2:
 		return get_status(square[0], color) == -1
 	return false
@@ -136,8 +119,8 @@ static func is_enemy(color: String, pos: String) -> bool:
 ## pos - coordinates of the square that needs to be checked
 ## Returns true if checked square contains the piece of the same color.
 ## False otherwise
-static func is_ally(color: String, pos: String) -> bool:
-	var square = get_square(pos)
+static func is_ally(color: String, pos: Array) -> bool:
+	var square = get_mark(pos)
 	if len(square) == 2:
 		return get_status(square[0], color) == 1
 	return false
@@ -147,8 +130,8 @@ static func is_ally(color: String, pos: String) -> bool:
 ## pos - coordinates of the square that needs to be checked
 ## Returns true if checked square contains the piece of neutral color.
 ## False otherwise
-static func is_neutral(color: String, pos: String) -> bool:
-	var square = get_square(pos)
+static func is_neutral(color: String, pos: Array) -> bool:
+	var square = get_mark(pos)
 	if len(square) == 2:
 		return get_status(square[0], color) == 0
 	return false
@@ -158,29 +141,25 @@ static func is_neutral(color: String, pos: String) -> bool:
 ## pos - coordinates of the square that needs to be checked
 ## Returns true if checked square contains the king of opposing color.
 ## False otherwise
-static func is_enemy_king(color: String, pos: String) -> bool:
-	return is_enemy(color, pos) and get_square(pos)[1] == 'K'
+static func is_enemy_king(color: String, pos: Array) -> bool:
+	return is_enemy(color, pos) and get_mark(pos)[1] == 'K'
 
 ## Movement
 
 ## Accepts two coordinates on the map.
 ## Returns number of squares between them.
-static func distance(from: String, to: String) -> int:
-	var from_xy = coords_to_int(from)
-	var to_xy = coords_to_int(to)
-	var dist_x = abs(from_xy[0] - to_xy[0])
-	var dist_y = abs(from_xy[1] - to_xy[1])
+static func distance(from: Array, to: Array) -> int:
+	var dist_x = abs(from[0] - to[0])
+	var dist_y = abs(from[1] - to[1])
 	return max(dist_x, dist_y)
 
 ## Moves a piece to a square, clears up previous square
-func traverse(piece: BasePiece, to: String):
+func traverse(piece: BasePiece, to: Array):
 	if piece != null:
 		if is_in_bounds(to) and is_empty(to):
-			
-			var xy_from = Board.coords_to_int(piece.coords)
-			var loc_from = Vector2((xy_from[0] - 0.5) * Global.tile_size,
-			(xy_from[1] - 0.5) * Global.tile_size)
-			get_node(piece.coords).remove_child(piece)
+			var loc_from = Vector2((piece.coords[0] - 0.5) * Global.tile_size,
+			(piece.coords[1] - 0.5) * Global.tile_size)
+			get_square(piece.coords).remove_child(piece)
 			piece.set_position(loc_from)
 			add_child(piece)
 			
@@ -195,7 +174,7 @@ func flip_weather(weather_dict: Dictionary):
 			if get_terrain(square) == "Water" and get_weather(square) == "Snow":
 				if not is_empty(square):
 					cleared_squares.append(square)
-			get_node(square).flip_weather(weather)
+			get_square(square).flip_weather(weather)
 	return cleared_squares
 
 func randomize_terrain():
@@ -203,11 +182,11 @@ func randomize_terrain():
 	var terrains = ter.randomize_terrain(self, [10, 17, 22, 25, 28, 30])
 	return terrains
 
-func get_terrain(pos: String):
-	return get_node(pos).terrain
+func get_terrain(pos: Array):
+	return get_square(pos).terrain
 
-func get_weather(pos: String):
-	return get_node(pos).weather
+func get_weather(pos: Array):
+	return get_square(pos).weather
 
-func get_piece(pos: String):
-	return get_node(pos).get_piece()
+func get_piece(pos: Array):
+	return get_square(pos).get_piece()

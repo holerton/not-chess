@@ -99,9 +99,8 @@ func fill_terrain_block(full_board: Array, component: Array, num: int, terrain: 
 				options.append(neighbor)
 		options.erase(new_square)
 		
-		var pos = Board.int_to_coords(new_square)
-		chessboard.get_node(pos).set_terrain(terrain)
-		terrains[terrain].append(pos)
+		chessboard.get_square(new_square).set_terrain(terrain)
+		terrains[terrain].append(new_square)
 	
 	for sq in block_squares:
 		ind = full_board.find(sq)

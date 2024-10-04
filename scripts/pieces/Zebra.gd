@@ -5,7 +5,7 @@ class_name Zebra
 ## Creates a new Zebra. Accepts three parameters: color, coords and position. 
 ## Those parameters are used in parent's constructor.
 ## Also sets its textures.
-func _init(color: String, coords: String):
+func _init(color: String, coords: Array):
 	self.speed = 1
 	self.terrain_weather_rules["Snow"] = 0
 	super(color, coords, "Zebra")

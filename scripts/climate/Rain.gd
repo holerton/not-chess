@@ -63,7 +63,7 @@ func change_weather(month):
 	# print("Changed: ", added_rains)
 	return added_rains
 
-func move_weather(pos: String):
+func move_weather(pos: Array):
 	var neighbors = Board.get_neighbors(pos)
 	var ind = randi() % len(neighbors)
 	return neighbors[ind]

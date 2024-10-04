@@ -19,11 +19,10 @@ var weather: String = "None"
 ## size defines the size of the rectangle;
 ## name defines the name that is used by BasePiece.
 ## Also creates an invisible Panel that reads clicks
-func _init(type: String, size: Vector2, name: String, signal_reciever: Callable):
+func _init(type: String, size: Vector2, signal_reciever: Callable):
 	self.terrain = type
 	
 	square_clicked.connect(signal_reciever)
-	self.name = name
 	
 	var panel = Panel.new()
 	panel.set_custom_minimum_size(size)

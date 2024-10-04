@@ -5,7 +5,7 @@ class_name Bishop
 ## Creates a new Bishop. Accepts two parameters: color and coords. 
 ## Those parameters are used in parent's constructor.
 ## Also sets it's range, speed, damage and textures.
-func _init(color: String, coords: String):
+func _init(color: String, coords: Array):
 	self.range = 2
 	self.speed = 1
 	self.damage = 1
