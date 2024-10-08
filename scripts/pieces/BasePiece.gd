@@ -204,10 +204,11 @@ func skip_turn() -> void:
 
 ## Returns route to a destination, finding it from distances_map
 func get_route(board: Board, to: Array) -> Array:
-	var route = [to]
-	var parent = distances_map[find_in_distances_map(to)][1]
-	if parent == [-1, -1]:
+	var index = find_in_distances_map(to)
+	if index == -1 or to == coords:
 		return []
+	var route = [to]
+	var parent = distances_map[index][1]
 	while parent != coords:
 		route.append(parent)
 		parent = distances_map[find_in_distances_map(parent)][1]
