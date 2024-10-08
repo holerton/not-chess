@@ -23,16 +23,12 @@ func set_destination(board: Board):
 		dest_array[rand_choice] = get_new_pos.call(rand_choice)
 		self.dest = dest_array
 
-func give_move_to_dest(board: Board):
-	var visited = fill_mask(false)
-	var distances = fill_mask(Global.MY_INF)
-	distances[coords[1]][coords[0]] = 0
-	
-	var queue = [coords]
-	
-
 func move_to_dest(board: Board):
-	pass
+	get_distances(board, dest)
+	var route = get_route(board, dest)
+	if route.is_empty():
+		return coords
+	return route[0]
 
 func auto_move(board: Board):
 	var reachable = get_reachable(board)
