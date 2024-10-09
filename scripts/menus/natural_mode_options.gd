@@ -31,7 +31,7 @@ func _on_submit_button_pressed():
 			if piece_type != "King" and piece_type != "Pawn":
 				Global.limits[piece_type] = army_limits[ind]
 		
-		get_tree().change_scene_to_file("res://scripts/menus/loading_scene.tscn")
+		get_tree().change_scene_to_file("res://scenes/loading_scene.tscn")
 
 func _on_size_changed():
 	current_width = $Width.get_value() if $Width.get_value() > 0 else current_width
