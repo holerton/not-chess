@@ -2,10 +2,13 @@ extends Node
 class_name Terrain
 ## Terrain generation
 
-var chessboard: Board
 var terrains: Dictionary = {"Plain": [], "Forest": [], "Water": [], 
 "Desert": [], "Marsh": [], "Mountain": []}
-
+var terrain_names: Array = ["Plain", "Forest", "Water", "Desert", "Marsh", "Mountain"]
+signal update_status(value)
+var terrain_blocks: Array
+var full_board: Array
+var all_blocks: int
 ## Returns neighbors of a given square on a component
 func get_neighbors(component: Array, xy: Array) -> Array:
 	var x = xy[0]
@@ -99,7 +102,6 @@ func fill_terrain_block(full_board: Array, component: Array, num: int, terrain: 
 				options.append(neighbor)
 		options.erase(new_square)
 		
-		chessboard.get_square(new_square).set_terrain(terrain)
 		terrains[terrain].append(new_square)
 	
 	for sq in block_squares:
@@ -136,7 +138,7 @@ func get_blocks(k_avg: float, k_var: float, total: int):
 
 ## Returns lengths of terrain blocks
 func calc_block_lengths(cum_weights: Array):
-	var board_size = chessboard.board_height * chessboard.board_width
+	var board_size = Global.board_height * Global.board_width
 
 	var total_weight = cum_weights[-1]
 	var total_squares = [0, 0, 0, 0, 0, 0]
@@ -150,10 +152,10 @@ func calc_block_lengths(cum_weights: Array):
 	return total_squares
 
 ## Sets random terrain
-func randomize_terrain(board: Board, cum_weights: Array):
-	self.chessboard = board
+func randomize_terrain(cum_weights: Array):
+	update_status.connect(Global.load_screen.on_update_status)
 	var block_lengths = calc_block_lengths(cum_weights)
-	var board_size = chessboard.board_height * chessboard.board_width
+	var board_size = Global.board_height * Global.board_width
 	var terrains = ["Plain", "Forest", "Water", "Desert", "Marsh", "Mountain"]
 	
 	var k_min = [log(board_size) - 2, log(board_size) - 3, log(board_size) - 3,
@@ -162,46 +164,52 @@ func randomize_terrain(board: Board, cum_weights: Array):
 	var k_max = [board_size / 16.0, board_size / 10.0, board_size / 10.0,
 	board_size / 32.0, board_size / 32.0, board_size / 32.0, board_size / 32.0]
 	
-	var terrain_blocks = []
-	var sum_len = 0
+	terrain_blocks = []
+	all_blocks = 0
 	for i in range(6):
 		var k_avg = (k_min[i] + k_max[i]) / 2.0
 		var k_var = (k_max[i] - k_avg) / 3.0
 		var new_blocks = get_blocks(k_avg, k_var, block_lengths[i])
 		terrain_blocks.append(new_blocks)
-		sum_len += len(terrain_blocks[-1])
+		all_blocks += len(terrain_blocks[-1])
 	
 	## Full board consists of squares. 
 	## Every square is defined by coordinates and true/false value
 	## True, if square doesn't have a terrain. False otherwise.
-	var full_board = []
-	for i in range(1, chessboard.board_height + 1):
-		for j in range(1, chessboard.board_width + 1):
+	full_board = []
+	for i in range(1, Global.board_height + 1):
+		for j in range(1, Global.board_width + 1):
 			full_board.append([j, i, true])
 	
-	## Places blocks until it can no longer place anything
-	print(terrain_blocks)
+
+func get_next_block(): 
 	var block_placed = true
-	while sum_len and block_placed:
-		var ind = randi() % 6
-		if not terrain_blocks[ind].is_empty():
-			block_placed = false
-			var block_len = terrain_blocks[ind][0]
-			terrain_blocks[ind].erase(block_len)
-			var components = get_components(full_board)
-			for component in components:
-				if len(component) >= block_len:
-					block_placed = fill_terrain_block(full_board, component,
-					block_len, terrains[ind])
-					sum_len -= 1
-					break
-	print(terrain_blocks)
+	var sum_len = terrain_blocks.reduce(
+		func(accum, block): return accum + len(block), 0
+	)
+	if sum_len == 0:
+		update_status.emit(1.0)
+		return true
+	var ind = randi() % 6
+	while terrain_blocks[ind].is_empty():
+		ind = randi() % 6
 	
-	## If any free squares left, fills them with random terrains
+	var block_len = terrain_blocks[ind][0]
+	terrain_blocks[ind].erase(block_len)
+	var components = get_components(full_board)
+	for component in components:
+		if len(component) >= block_len:
+			block_placed = fill_terrain_block(full_board, component,
+			block_len, terrain_names[ind])
+			sum_len -= 1
+			update_status.emit(float(all_blocks - sum_len) / all_blocks)
+			return false
+	return true
+
+func fill_last_spots():
 	var comps = get_components(full_board)
 	for comp in comps:
-		var new_terrain = terrains[randi() % 6]
-		print(len(comp), new_terrain)
+		var new_terrain = terrain_names[randi() % 6]
 		fill_terrain_block(full_board, comp, len(comp), new_terrain)
-	return self.terrains
-	
+	update_status.emit(1.0)
+	return

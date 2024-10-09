@@ -3,7 +3,8 @@ extends Node
 var board_width: int = 8
 var board_height: int = 8
 var tile_size: int = 50
-
+var load_screen: LoadScreen
+var terrain_map: Dictionary
 ## Amount of available pieces
 var piece_num: int = 4
 
