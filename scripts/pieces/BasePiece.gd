@@ -71,7 +71,7 @@ func get_reachable(board: Board) -> Array:
 	var reachable = []
 	get_distances(board)
 	for entry in distances_map:
-		if not board.is_ally(color, entry[0]):
+		if not board.is_ally(color, entry[0]) and entry[2] <= speed:
 			reachable.append(entry[0])
 	return reachable
 
@@ -123,7 +123,7 @@ func get_distances(board: Board, destination = null) -> void:
 				min_dist = distances[square[1]][square[0]]
 		squares.erase(next_square)
 		if next_square == destination or \
-		(min_dist == self.speed and destination == null):
+		(min_dist >= self.speed and destination == null):
 			break
 		var neighbors = Board.get_neighbors(next_square)
 		for xy in neighbors:
