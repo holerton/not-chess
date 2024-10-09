@@ -177,10 +177,10 @@ func flip_weather(weather_dict: Dictionary):
 			get_square(square).flip_weather(weather)
 	return cleared_squares
 
-func randomize_terrain():
-	var ter = Terrain.new()
-	var terrains = ter.randomize_terrain(self, [10, 17, 22, 25, 28, 30])
-	return terrains
+func set_terrains(terrain_map: Dictionary):
+	for terrain in terrain_map:
+		for square in terrain_map[terrain]:
+			get_square(square).set_terrain(terrain)
 
 func get_terrain(pos: Array):
 	return get_square(pos).terrain

@@ -2,15 +2,15 @@ extends GameMode
 
 var season_counter = 0
 var seasons: PieChart
-var terrain_map: Dictionary
+
 var climate: Climate
 var neutral_player: NeutralPlayer
 
 func _ready():
 	super()
 	spawner.anchors_preset = PRESET_CENTER_TOP
-	self.terrain_map = board.randomize_terrain()
-	self.climate = Climate.new(self.terrain_map)
+	board.set_terrains(Global.terrain_map)
+	self.climate = Climate.new(Global.terrain_map)
 	board.flip_weather(self.climate.initial_climate())
 	neutral_player = NeutralPlayer.new(board)
 	self.seasons = PieChart.new(Vector2($RightRect.size[0], $RightRect.size[0]))
@@ -26,8 +26,6 @@ func end_turn():
 	var someone_moved = false
 	var tween = get_tree().create_tween()
 	var moved_pieces = []
-	# tween.set_parallel()
-	tween.connect("finished", finish_auto_move.bind(moved_pieces))
 	for piece in neutral_player.pieces:
 		var route = neutral_player.move_piece(board, piece)
 		if not route.is_empty():
@@ -36,10 +34,9 @@ func end_turn():
 			board.traverse(piece, route[-1])
 			for square in route:
 				animated_move(piece, square, tween)
-	if not someone_moved:
-		tween.emit_signal("finished")
-
-func finish_auto_move(moved_pieces: Array):
+	if someone_moved:
+		await Signal(tween, "finished")
+	
 	finish_move(moved_pieces)
 	change_climate()
 
@@ -68,6 +65,7 @@ func change_climate():
 
 func animated_arrival(piece: BasePiece):
 	var tween = create_tween()
-	tween.connect("finished", board.clear_square.bind(piece))
-	tween.tween_property(piece, "modulate", Color.SKY_BLUE, 0.3)
-	tween.tween_property(piece, "scale", Vector2(), 0.3)
+	tween.tween_property(piece, "modulate", Color.SKY_BLUE, 0.15)
+	tween.tween_property(piece, "scale", Vector2(), 0.15)
+	await Signal(tween, "finished")
+	board.clear_square(piece)
